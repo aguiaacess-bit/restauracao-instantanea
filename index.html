@@ -1,154 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Restauração Instantânea</title>
-  <style>
-    body {
-      background-color: #000;
-      color: #d8c8a8;
-      font-family: 'Poppins', sans-serif;
-      text-align: center;
-      padding: 30px;
-    }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 40px;
-      color: #d8c8a8;
-      letter-spacing: 1px;
-    }
-    .upload-box {
-      border: 2px dashed #d8c8a8;
-      padding: 50px;
-      border-radius: 20px;
-      max-width: 400px;
-      margin: 0 auto 25px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.4s ease;
-      box-shadow: 0 0 10px rgba(216, 200, 168, 0.1);
-    }
-    .upload-box::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -75%;
-      width: 50%;
-      height: 100%;
-      background: linear-gradient(120deg, transparent, rgba(255, 230, 150, 0.4), transparent);
-      animation: brilho 3s infinite;
-    }
-    @keyframes brilho {
-      0% { left: -75%; }
-      50% { left: 125%; }
-      100% { left: 125%; }
-    }
-    .upload-box:hover {
-      border-color: #f0dca3;
-      box-shadow: 0 0 25px rgba(240, 220, 163, 0.4);
-      transform: scale(1.03);
-    }
-    .upload-box p {
-      position: relative;
-      z-index: 1;
-    }
-    button {
-      background-color: #d8c8a8;
-      color: #000;
-      border: none;
-      padding: 15px 45px;
-      font-weight: bold;
-      border-radius: 12px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: all 0.3s ease, transform 0.4s ease, opacity 0.4s ease;
-      box-shadow: 0 0 10px rgba(216, 200, 168, 0.3);
-      opacity: 0;
-      transform: scale(0.95);
-      animation: fadeZoom 0.8s forwards 1s;
-    }
-    @keyframes fadeZoom {
-      to { opacity: 1; transform: scale(1); }
-    }
-    button:hover {
-      background-color: #f0dca3;
-      box-shadow: 0 0 25px rgba(240, 220, 163, 0.6);
-      transform: scale(1.05);
-    }
-    .passos {
-      text-align: left;
-      max-width: 600px;
-      margin: 50px auto;
-      line-height: 1.8;
-    }
-    .passos strong {
-      color: #f0dca3;
-    }
-    .perguntas {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      max-width: 800px;
-      margin: 40px auto;
-      gap: 20px;
-    }
-    .perguntas div {
-      border: 1px solid #d8c8a8;
-      width: 30%;
-      min-width: 230px;
-      border-radius: 12px;
-      padding: 20px;
-      color: #d8c8a8;
-      transition: all 0.3s ease;
-      text-align: center;
-      line-height: 1.6;
-    }
-    .perguntas div:hover {
-      background-color: rgba(216, 200, 168, 0.05);
-      box-shadow: 0 0 15px rgba(240, 220, 163, 0.4);
-      transform: scale(1.05);
-    }
-    .perguntas strong {
-      color: #f0dca3;
-      display: block;
-      margin-bottom: 8px;
-    }
-    .garantia {
-      margin-top: 60px;
-      border-top: 1px solid #d8c8a8;
-      padding-top: 25px;
-      font-size: 1rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      color: #d8c8a8;
-    }
-    .garantia strong {
-      color: #f0dca3;
-    }
-    .contato {
-      margin-top: 15px;
-      font-size: 0.9rem;
-      color: #bca880;
-    }
-    .preview {
-      max-width: 100%;
-      max-height: 260px;
-      border-radius: 8px;
-      margin-top: 12px;
-      display: none;
-    }
-    input[type="email"] {
-      padding:10px;
-      border-radius:8px;
-      border:1px solid #d8c8a8;
-      width:60%;
-      max-width:320px;
-      margin-bottom:10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restauração Instantânea</title>
+<style>
+  body { background-color: #000; color: #d8c8a8; font-family: 'Poppins', sans-serif; text-align: center; padding: 30px; }
+  h1 { font-size: 2rem; margin-bottom: 40px; color: #d8c8a8; letter-spacing: 1px; }
+  .upload-box { border: 2px dashed #d8c8a8; padding: 50px; border-radius: 20px; max-width: 400px; margin: 0 auto 25px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.4s ease; box-shadow: 0 0 10px rgba(216,200,168,0.1);}
+  .upload-box::before { content:""; position:absolute; top:0; left:-75%; width:50%; height:100%; background: linear-gradient(120deg,transparent, rgba(255,230,150,0.4),transparent); animation: brilho 3s infinite; }
+  @keyframes brilho { 0% {left:-75%;} 50%{left:125%;} 100%{left:125%;} }
+  .upload-box:hover { border-color:#f0dca3; box-shadow:0 0 25px rgba(240,220,163,0.4); transform:scale(1.03);}
+  .upload-box p { position: relative; z-index:1; }
+  button { background-color:#d8c8a8; color:#000; border:none; padding:15px 45px; font-weight:bold; border-radius:12px; cursor:pointer; margin-top:10px; transition: all 0.3s ease, transform 0.4s ease, opacity 0.4s ease; box-shadow:0 0 10px rgba(216,200,168,0.3); opacity:0; transform:scale(0.95); animation: fadeZoom 0.8s forwards 1s;}
+  @keyframes fadeZoom { to {opacity:1; transform:scale(1);} }
+  button:hover { background-color:#f0dca3; box-shadow:0 0 25px rgba(240,220,163,0.6); transform:scale(1.05);}
+  .preview { max-width:100%; max-height:260px; border-radius:8px; margin-top:12px; display:none; }
+  input[type="email"] { padding:10px; border-radius:8px; border:1px solid #d8c8a8; width:60%; max-width:320px; margin-bottom:10px;}
+  .passos { text-align:left; max-width:600px; margin:50px auto; line-height:1.8;}
+  .passos strong { color:#f0dca3;}
+</style>
 </head>
 <body>
 
@@ -168,30 +39,7 @@
 <div class="passos">
   <p><strong>Passo 1:</strong> Anexe a foto que deseja restaurar.</p>
   <p><strong>Passo 2:</strong> Clique em “Pagar”, informe o seu e-mail e efetue o pagamento.</p>
-  <p><strong>Passo 3:</strong> Após o pagamento, receba sua imagem pelo e-mail em 1 minuto (ou WhatsApp: <strong>51 98158-3937</strong>).</p>
-</div>
-
-<div class="perguntas">
-  <div>
-    <strong>💳 Como pago?</strong>
-    Os pagamentos são processados por <strong>PIX</strong>, então o pagamento entra rápido e a imagem é gerada na hora.
-  </div>
-  <div>
-    <strong>🤔 E se eu não gostar?</strong>
-    Peça <strong>revisão gratuita</strong> ou <strong>seu dinheiro de volta</strong> via WhatsApp.
-  </div>
-  <div>
-    <strong>📞 E se eu quiser ajuda?</strong>
-    Qualquer dúvida pelo <strong>WhatsApp</strong> ou <strong>email</strong>. Atendimento humanizado.
-  </div>
-</div>
-
-<div class="garantia">
-  <p>🛡️ <strong>Garantia:</strong> Se a imagem não melhorar, peça revisão gratuita ou seu dinheiro de volta.</p>
-  <div class="contato">
-    <p>Email: <strong>águiaacess@gmail.com</strong></p>
-    <p>WhatsApp: <strong>51 98158-3937</strong></p>
-  </div>
+  <p><strong>Passo 3:</strong> Após o pagamento, receba sua imagem pelo e-mail.</p>
 </div>
 
 <script>
@@ -204,39 +52,69 @@ const status = document.getElementById('status');
 
 let selectedFile = null;
 
-// Eventos de drag & drop e clique
+// Abrir seletor de arquivos ao clicar na caixa
 uploadBox.addEventListener('click', ()=> fileInput.click());
-uploadBox.addEventListener('dragover', (e)=> { e.preventDefault(); uploadBox.style.opacity=0.8; });
-uploadBox.addEventListener('dragleave', (e)=> { e.preventDefault(); uploadBox.style.opacity=1; });
-uploadBox.addEventListener('drop', (e)=>{
+
+// Drag & Drop
+uploadBox.addEventListener('dragover', e=> { e.preventDefault(); uploadBox.style.opacity=0.8; });
+uploadBox.addEventListener('dragleave', e=> { e.preventDefault(); uploadBox.style.opacity=1; });
+uploadBox.addEventListener('drop', e=> {
   e.preventDefault();
   uploadBox.style.opacity=1;
   const f = e.dataTransfer.files[0];
   if(f) handleFile(f);
 });
 
-fileInput.addEventListener('change', (e)=>{
+// Seleção pelo input
+fileInput.addEventListener('change', e=> {
   const f = e.target.files[0];
   if(f) handleFile(f);
 });
 
 function handleFile(f){
-  if(!f.type.startsWith('image/')){ alert('Selecione uma imagem válida'); return; }
+  if(!f.type.startsWith('image/')) { alert('Selecione uma imagem válida'); return; }
   selectedFile = f;
   preview.src = URL.createObjectURL(f);
-  preview.style.display = 'block';
-  payBtn.disabled = false;
-  status.textContent = `Arquivo selecionado: ${f.name}`;
+  preview.style.display='block';
+  payBtn.disabled=false;
+  status.textContent=`Arquivo selecionado: ${f.name}`;
 }
 
+// Enviar para a função serverless
 payBtn.addEventListener('click', async ()=>{
   if(!selectedFile) return alert('Selecione uma imagem primeiro.');
   const email = emailInput.value.trim();
   if(!email) return alert('Informe um e-mail.');
 
-  payBtn.disabled = true;
-  status.textContent = 'Enviando...';
+  payBtn.disabled=true;
+  status.textContent='Enviando...';
 
   const reader = new FileReader();
   reader.onload = async function(evt){
-   
+    const base64 = evt.target.result.split(',')[1]; // remove prefix data:image/...
+    try{
+      const res = await fetch('/api/upload', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ filename: selectedFile.name, email, data: base64 })
+      });
+      const json = await res.json();
+      if(res.ok){
+        status.textContent=`✔ ${json.message || 'Arquivo enviado com sucesso!'}`;
+      } else {
+        status.textContent=`✖ Erro: ${json.error || json.message || 'Servidor'}`;
+      }
+    } catch(err){
+      console.error(err);
+      status.textContent='✖ Erro ao enviar. Veja console.';
+    } finally {
+      payBtn.disabled=false;
+    }
+  };
+  reader.readAsDataURL(selectedFile);
+});
+</script>
+
+</body>
+</html>
+
