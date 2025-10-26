@@ -11,14 +11,14 @@ export default async function handler(req, res) {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'theusavila1@gmail.com', // seu Gmail
-        pass: 'iidu jpdw ngtm ldlz',   // a senha de app que você gerou
+        user: 'aguiaacess@gmail.com',     // seu Gmail do site
+        pass: 'zsnygcbksvtjfivq',        // senha de app gerada, sem espaços
       },
     });
 
     try {
       await transporter.sendMail({
-        from: '"Restauração Instantânea" <theusavila1@gmail.com>',
+        from: '"Restauração Instantânea" <aguiaacess@gmail.com>',
         to: email, // envia para o e-mail do usuário
         subject: 'Sua foto restaurada',
         text: 'Aqui está sua foto restaurada!',
