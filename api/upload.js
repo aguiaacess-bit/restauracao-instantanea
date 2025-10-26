@@ -1,16 +1,40 @@
 // api/upload.js
-export default function handler(req, res) {
+import nodemailer from 'nodemailer';
+
+export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { filename, email, data } = req.body;
 
     console.log('Recebido:', filename, email);
 
-    // Aqui você pode:
-    // - Salvar a imagem no banco (MongoDB, Supabase, Firebase)
-    // - Enviar para IA processar
-    // - Enviar e-mail de confirmação
+    // Configuração do Nodemailer com seu e-mail e senha de app
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'aguiaacess@gmail.com', // seu Gmail
+        pass: 'iidujpdwngtmldlz',     // senha de app do Gmail
+      },
+    });
 
-    return res.status(200).json({ message: 'Arquivo recebido com sucesso!' });
+    try {
+      await transporter.sendMail({
+        from: '"Restauração Instantânea" <aguiaacess@gmail.com>',
+        to: email, // envia para o e-mail do usuário
+        subject: 'Sua foto restaurada',
+        text: 'Aqui está sua foto restaurada!',
+        attachments: [
+          {
+            filename: filename,
+            content: Buffer.from(data, 'base64'),
+          },
+        ],
+      });
+
+      return res.status(200).json({ message: 'Arquivo enviado por e-mail com sucesso!' });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Erro ao enviar o e-mail.' });
+    }
   }
   res.status(405).json({ error: 'Método não permitido' });
 }
