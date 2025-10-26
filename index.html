@@ -5,19 +5,98 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Restauração Instantânea</title>
 <style>
-  body { background-color: #000; color: #d8c8a8; font-family: 'Poppins', sans-serif; text-align: center; padding: 30px; }
-  h1 { font-size: 2rem; margin-bottom: 40px; color: #d8c8a8; letter-spacing: 1px; }
-  .upload-box { border: 2px dashed #d8c8a8; padding: 50px; border-radius: 20px; max-width: 400px; margin: 0 auto 25px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.4s ease; box-shadow: 0 0 10px rgba(216,200,168,0.1);}
-  .upload-box::before { content:""; position:absolute; top:0; left:-75%; width:50%; height:100%; background: linear-gradient(120deg,transparent, rgba(255,230,150,0.4),transparent); animation: brilho 3s infinite; }
+  body { 
+    background-color: #000; 
+    color: #d8c8a8; 
+    font-family: 'Poppins', sans-serif; 
+    text-align: center; 
+    padding: 30px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* centraliza verticalmente */
+    min-height: 100vh; /* garante altura da tela */
+  }
+  h1 { 
+    font-size: 2rem; 
+    margin-bottom: 40px; 
+    color: #d8c8a8; 
+    letter-spacing: 1px; 
+  }
+  .upload-box { 
+    border: 2px dashed #d8c8a8; 
+    padding: 50px; 
+    border-radius: 20px; 
+    max-width: 400px; 
+    margin: 0 auto 25px; 
+    cursor: pointer; 
+    position: relative; 
+    overflow: hidden; 
+    transition: all 0.4s ease; 
+    box-shadow: 0 0 10px rgba(216,200,168,0.1);
+  }
+  .upload-box::before { 
+    content:""; 
+    position:absolute; 
+    top:0; 
+    left:-75%; 
+    width:50%; 
+    height:100%; 
+    background: linear-gradient(120deg,transparent, rgba(255,230,150,0.4),transparent); 
+    animation: brilho 3s infinite; 
+  }
   @keyframes brilho { 0% {left:-75%;} 50%{left:125%;} 100%{left:125%;} }
-  .upload-box:hover { border-color:#f0dca3; box-shadow:0 0 25px rgba(240,220,163,0.4); transform:scale(1.03);}
+  .upload-box:hover { 
+    border-color:#f0dca3; 
+    box-shadow:0 0 25px rgba(240,220,163,0.4); 
+    transform:scale(1.03);
+  }
   .upload-box p { position: relative; z-index:1; }
-  button { background-color:#d8c8a8; color:#000; border:none; padding:15px 45px; font-weight:bold; border-radius:12px; cursor:pointer; margin-top:10px; transition: all 0.3s ease, transform 0.4s ease, opacity 0.4s ease; box-shadow:0 0 10px rgba(216,200,168,0.3); opacity:0; transform:scale(0.95); animation: fadeZoom 0.8s forwards 1s;}
+  button { 
+    background-color:#d8c8a8; 
+    color:#000; 
+    border:none; 
+    padding:15px 45px; 
+    font-weight:bold; 
+    border-radius:12px; 
+    cursor:pointer; 
+    margin-top:10px; 
+    transition: all 0.3s ease, transform 0.4s ease, opacity 0.4s ease; 
+    box-shadow:0 0 10px rgba(216,200,168,0.3); 
+    opacity:0; 
+    transform:scale(0.95); 
+    animation: fadeZoom 0.8s forwards 1s;
+  }
   @keyframes fadeZoom { to {opacity:1; transform:scale(1);} }
-  button:hover { background-color:#f0dca3; box-shadow:0 0 25px rgba(240,220,163,0.6); transform:scale(1.05);}
-  .preview { max-width:100%; max-height:260px; border-radius:8px; margin-top:12px; display:none; }
-  input[type="email"] { padding:10px; border-radius:8px; border:1px solid #d8c8a8; width:60%; max-width:320px; margin-bottom:10px;}
-  .passos { text-align:left; max-width:600px; margin:50px auto; line-height:1.8;}
+  button:hover { 
+    background-color:#f0dca3; 
+    box-shadow:0 0 25px rgba(240,220,163,0.6); 
+    transform:scale(1.05);
+  }
+  .preview-container { 
+    display: flex; 
+    justify-content: center; /* centraliza horizontalmente */ 
+    margin-top: 12px; 
+  }
+  .preview { 
+    max-width:100%; 
+    max-height:260px; 
+    border-radius:8px; 
+    display:none; 
+  }
+  input[type="email"] { 
+    padding:10px; 
+    border-radius:8px; 
+    border:1px solid #d8c8a8; 
+    width:60%; 
+    max-width:320px; 
+    margin-bottom:10px;
+  }
+  .passos { 
+    text-align:left; 
+    max-width:600px; 
+    margin:50px auto; 
+    line-height:1.8;
+  }
   .passos strong { color:#f0dca3;}
 </style>
 </head>
@@ -28,7 +107,9 @@
 <div id="uploadBox" class="upload-box">
   <p><strong>📎 Clique ou arraste a foto aqui</strong></p>
   <input id="fileInput" type="file" accept="image/*" style="display:none" />
-  <img id="preview" class="preview" alt="Pré-visualização" />
+  <div class="preview-container">
+    <img id="preview" class="preview" alt="Pré-visualização" />
+  </div>
 </div>
 
 <input id="emailInput" type="email" placeholder="Digite o seu e-mail" />
@@ -117,4 +198,3 @@ payBtn.addEventListener('click', async ()=>{
 
 </body>
 </html>
-
