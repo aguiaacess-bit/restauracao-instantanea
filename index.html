@@ -348,7 +348,12 @@ function carregarDados(){
                 document.getElementById("metaMensal").value=d.economia.metaMensal||0;
             }
             calcular();
+        } else {
+            calcular();
         }
+    }).catch(e => {
+        console.error("Erro ao carregar dados:", e);
+        calcular();
     });
 }
 
