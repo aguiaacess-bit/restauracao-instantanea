@@ -719,55 +719,65 @@
     </div>
     
     <script>
-        // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyBW6aHvIHMgpDTk7b_kBVwncmQKcetvh-4",
-            authDomain: "cfi-aguiaacess.firebaseapp.com",
-            projectId: "cfi-aguiaacess",
-            storageBucket: "cfi-aguiaacess.firebasestorage.app",
-            messagingSenderId: "330279402203",
-            appId: "1:330279402203:web:f80ffaa25bd5f1b544eafe"
-        };
-        
-        // Inicializa Firebase
-        firebase.initializeApp(firebaseConfig);
-        
-        // Serviços
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        
-        // Referências dos elementos do DOM
-        const loginBox = document.getElementById("login");
-        const appBox = document.getElementById("app");
-        const btnSair = document.getElementById("btnSair");
-        const email = document.getElementById("email");
-        const senha = document.getElementById("senha");
-        
-        // Funções de autenticação
-        function login() {
-          auth.signInWithEmailAndPassword(
-            email.value,
-            senha.value
-          ).catch(e => alert(e.message));
-        }
+    // Configuração do Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBW6aHvIHMgpDTk7b_kBVwncmQKcetvh-4",
+        authDomain: "cfi-aguiaacess.firebaseapp.com",
+        projectId: "cfi-aguiaacess",
+        storageBucket: "cfi-aguiaacess.firebasestorage.app",
+        messagingSenderId: "330279402203",
+        appId: "1:330279402203:web:f80ffaa25bd5f1b544eafe"
+    };
+    
+    // Inicializa Firebase
+    firebase.initializeApp(firebaseConfig);
+    
+    // Serviços
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    // Referências dos elementos do DOM
+    const loginBox = document.getElementById("login");
+    const appBox = document.getElementById("app");
+    const btnSair = document.getElementById("btnSair");
+    const email = document.getElementById("email");
+    const senha = document.getElementById("senha");
+    
+    // Funções de autenticação
+    function login() {
+      auth.signInWithEmailAndPassword(email.value, senha.value)
+        .catch(e => alert(e.message));
+    }
 
-        function register() {
-          auth.createUserWithEmailAndPassword(
-            email.value,
-            senha.value
-          ).catch(e => alert(e.message));
-        }
-        
-        // NOVA FUNCIONALIDADE 1: LOGOUT
-        function logout() {
-          if (confirm('Deseja realmente sair?')) {
-            auth.signOut();
-          }
-        }
-        
-        // Expor funções para o HTML
-        window.login = login;
-        window.register = register;
-        window.logout = logout;
-        
-        // NOVA FUNCIONALIDADE
+    function register() {
+      auth.createUserWithEmailAndPassword(email.value, senha.value)
+        .catch(e => alert(e.message));
+    }
+    
+    function logout() {
+      if (confirm('Deseja realmente sair?')) {
+        auth.signOut();
+      }
+    }
+
+    // 🔒 CONTROLE DE LOGIN (MOSTRA / ESCONDE TELAS)
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        loginBox.style.display = "none";
+        appBox.style.display = "block";
+        btnSair.style.display = "block";
+      } else {
+        loginBox.style.display = "block";
+        appBox.style.display = "none";
+        btnSair.style.display = "none";
+      }
+    });
+
+    // 🔓 Expor funções para o HTML
+    window.login = login;
+    window.register = register;
+    window.logout = logout;
+</script>
+</body>
+</html>
+
