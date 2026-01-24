@@ -73,6 +73,7 @@
         #login button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
         #btnSair { position: absolute; top: 20px; right: 20px; padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: 2px solid white; border-radius: 8px; cursor: pointer; font-weight: 600; display: none; transition: all 0.3s; }
         #btnSair:hover { background: rgba(255,255,255,0.3); }
+        .debug-info { position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 8px; font-size: 12px; max-width: 300px; display: none; }
         @media print { .tabs { display: none; } body { background: white; } }
     </style>
 </head>
@@ -215,6 +216,8 @@
             </div>
         </div>
     </div>
+
+    <div class="debug-info" id="debugInfo">Status: Aguardando...</div>
     
     <script>
 const firebaseConfig={apiKey:"AIzaSyBW6aHvIHMgpDTk7b_kBVwncmQKcetvh-4",authDomain:"cfi-aguiaacess.firebaseapp.com",projectId:"cfi-aguiaacess",storageBucket:"cfi-aguiaacess.firebasestorage.app",messagingSenderId:"330279402203",appId:"1:330279402203:web:f80ffaa25bd5f1b544eafe"};
@@ -224,16 +227,42 @@ const db=firebase.firestore();
 
 let currentUser = null;
 
+function debug(msg) {
+    console.log(msg);
+    const debugEl = document.getElementById("debugInfo");
+    if (debugEl) {
+        debugEl.style.display = "block";
+        debugEl.textContent = msg;
+        setTimeout(() => debugEl.style.display = "none", 3000);
+    }
+}
+
 function login(){
-    auth.signInWithEmailAndPassword(document.getElementById("email").value,document.getElementById("senha").value).catch(e=>alert(e.message));
+    auth.signInWithEmailAndPassword(document.getElementById("email").value,document.getElementById("senha").value)
+        .then(() => debug("Login realizado!"))
+        .catch(e => {
+            alert(e.message);
+            debug("Erro no login: " + e.message);
+        });
 }
 
 function register(){
-    auth.createUserWithEmailAndPassword(document.getElementById("email").value,document.getElementById("senha").value).then(()=>alert("Conta criada com sucesso!")).catch(e=>alert(e.message));
+    auth.createUserWithEmailAndPassword(document.getElementById("email").value,document.getElementById("senha").value)
+        .then(() => {
+            alert("Conta criada com sucesso!");
+            debug("Conta criada!");
+        })
+        .catch(e => {
+            alert(e.message);
+            debug("Erro ao criar conta: " + e.message);
+        });
 }
 
 function logout(){
-    if(confirm('Deseja realmente sair?'))auth.signOut();
+    if(confirm('Deseja realmente sair?')) {
+        auth.signOut();
+        debug("Logout realizado!");
+    }
 }
 
 auth.onAuthStateChanged(user=>{
@@ -243,7 +272,6 @@ auth.onAuthStateChanged(user=>{
         document.getElementById("app").style.display="block";
         document.getElementById("btnSair").style.display="block";
         
-        // Inicializa com valores padrão se estiverem vazios
         if (!document.getElementById("month").value) {
             const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
             const dataAtual = new Date();
@@ -251,6 +279,7 @@ auth.onAuthStateChanged(user=>{
             document.getElementById("year").value = dataAtual.getFullYear();
         }
         
+        debug("Usuário logado: " + user.email);
         carregarNomeUsuario();
         carregarDados();
         atualizarTabelaAnual();
@@ -259,6 +288,7 @@ auth.onAuthStateChanged(user=>{
         document.getElementById("login").style.display="block";
         document.getElementById("app").style.display="none";
         document.getElementById("btnSair").style.display="none";
+        debug("Usuário deslogado");
     }
 });
 
@@ -273,7 +303,12 @@ function salvarNome() {
     const nome = document.getElementById("userName").value;
     db.collection("usuarios").doc(currentUser.uid).set({
         userName: nome
-    }, { merge: true }).catch(e => console.error("Erro ao salvar nome:", e));
+    }, { merge: true })
+        .then(() => debug("Nome salvo: " + nome))
+        .catch(e => {
+            console.error("Erro ao salvar nome:", e);
+            debug("Erro ao salvar nome");
+        });
 }
 
 function carregarNomeUsuario() {
@@ -281,17 +316,25 @@ function carregarNomeUsuario() {
     db.collection("usuarios").doc(currentUser.uid).get().then(doc => {
         if (doc.exists && doc.data().userName) {
             document.getElementById("userName").value = doc.data().userName;
+            debug("Nome carregado");
         }
-    }).catch(e => console.error("Erro ao carregar nome:", e));
+    }).catch(e => {
+        console.error("Erro ao carregar nome:", e);
+        debug("Erro ao carregar nome");
+    });
 }
 
 function salvarDados() {
-    if (!currentUser) return;
+    if (!currentUser) {
+        debug("Não há usuário logado para salvar");
+        return;
+    }
     
     const periodo = getPeriodoAtual();
     
     const dados = {
         userName: document.getElementById("userName").value,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         entradas: {
             salario: Number(document.getElementById("salario").value) || 0,
             rendaExtra: Number(document.getElementById("rendaExtra").value) || 0,
@@ -310,216 +353,4 @@ function salvarDados() {
         gastosVariaveis: {
             mercado: Number(document.getElementById("mercado").value) || 0,
             alimentacaoFora: Number(document.getElementById("alimentacaoFora").value) || 0,
-            delivery: Number(document.getElementById("delivery").value) || 0,
-            lazer: Number(document.getElementById("lazer").value) || 0,
-            roupas: Number(document.getElementById("roupas").value) || 0,
-            assinaturas: Number(document.getElementById("assinaturas").value) || 0,
-            suplementos: Number(document.getElementById("suplementos").value) || 0,
-            outrosVariaveis: Number(document.getElementById("outrosVariaveis").value) || 0
-        },
-        gastosInvisiveis: {
-            impulso: Number(document.getElementById("impulso").value) || 0,
-            parcelamentos: Number(document.getElementById("parcelamentos").value) || 0,
-            taxas: Number(document.getElementById("taxas").value) || 0,
-            pequenos: Number(document.getElementById("pequenos").value) || 0
-        },
-        economia: {
-            valorEconomizado: Number(document.getElementById("valorEconomizado").value) || 0,
-            metaMensal: Number(document.getElementById("metaMensal").value) || 0
-        },
-        resultadoFinal: Number(document.getElementById("resultadoFinal").textContent.replace("R$ ", "").replace(",", ".")) || 0
-    };
-    
-    db.collection("usuarios").doc(currentUser.uid).collection("meses").doc(periodo).set(dados)
-        .catch(e => console.error("Erro ao salvar dados:", e));
-}
-
-function carregarDados() {
-    if (!currentUser) return;
-    
-    const periodo = getPeriodoAtual();
-    
-    db.collection("usuarios").doc(currentUser.uid).collection("meses").doc(periodo).get()
-        .then(doc => {
-            if (doc.exists) {
-                const dados = doc.data();
-                
-                if (dados.entradas) {
-                    document.getElementById("salario").value = dados.entradas.salario || "";
-                    document.getElementById("rendaExtra").value = dados.entradas.rendaExtra || "";
-                    document.getElementById("ajudaTerceiros").value = dados.entradas.ajudaTerceiros || "";
-                    document.getElementById("outrosValores").value = dados.entradas.outrosValores || "";
-                }
-                
-                if (dados.gastosFixos) {
-                    document.getElementById("aluguel").value = dados.gastosFixos.aluguel || "";
-                    document.getElementById("agua").value = dados.gastosFixos.agua || "";
-                    document.getElementById("luz").value = dados.gastosFixos.luz || "";
-                    document.getElementById("internet").value = dados.gastosFixos.internet || "";
-                    document.getElementById("telefone").value = dados.gastosFixos.telefone || "";
-                    document.getElementById("transporte").value = dados.gastosFixos.transporte || "";
-                    document.getElementById("outrasFixas").value = dados.gastosFixos.outrasFixas || "";
-                }
-                
-                if (dados.gastosVariaveis) {
-                    document.getElementById("mercado").value = dados.gastosVariaveis.mercado || "";
-                    document.getElementById("alimentacaoFora").value = dados.gastosVariaveis.alimentacaoFora || "";
-                    document.getElementById("delivery").value = dados.gastosVariaveis.delivery || "";
-                    document.getElementById("lazer").value = dados.gastosVariaveis.lazer || "";
-                    document.getElementById("roupas").value = dados.gastosVariaveis.roupas || "";
-                    document.getElementById("assinaturas").value = dados.gastosVariaveis.assinaturas || "";
-                    document.getElementById("suplementos").value = dados.gastosVariaveis.suplementos || "";
-                    document.getElementById("outrosVariaveis").value = dados.gastosVariaveis.outrosVariaveis || "";
-                }
-                
-                if (dados.gastosInvisiveis) {
-                    document.getElementById("impulso").value = dados.gastosInvisiveis.impulso || "";
-                    document.getElementById("parcelamentos").value = dados.gastosInvisiveis.parcelamentos || "";
-                    document.getElementById("taxas").value = dados.gastosInvisiveis.taxas || "";
-                    document.getElementById("pequenos").value = dados.gastosInvisiveis.pequenos || "";
-                }
-                
-                if (dados.economia) {
-                    document.getElementById("valorEconomizado").value = dados.economia.valorEconomizado || "";
-                    document.getElementById("metaMensal").value = dados.economia.metaMensal || "";
-                }
-                
-                // Importante: recalcular após carregar os dados
-                setTimeout(() => calcularSemSalvar(), 100);
-            } else {
-                limparCampos();
-            }
-        })
-        .catch(e => console.error("Erro ao carregar dados:", e));
-}
-
-function limparCampos() {
-    const campos = ["salario", "rendaExtra", "ajudaTerceiros", "outrosValores", "aluguel", "agua", "luz", "internet", "telefone", "transporte", "outrasFixas", "mercado", "alimentacaoFora", "delivery", "lazer", "roupas", "assinaturas", "suplementos", "outrosVariaveis", "impulso", "parcelamentos", "taxas", "pequenos", "valorEconomizado", "metaMensal"];
-    campos.forEach(id => document.getElementById(id).value = "");
-    calcular();
-}
-
-function atualizarTabelaAnual() {
-    if (!currentUser) return;
-    
-    const ano = document.getElementById("year").value.trim() || "2025";
-    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    
-    let totalEntradasAnual = 0;
-    let totalGastosAnual = 0;
-    let totalEconomiaAnual = 0;
-    let totalResultadoAnual = 0;
-    
-    const tbody = document.getElementById("tabelaAnual");
-    tbody.innerHTML = "";
-    
-    let promessas = meses.map((mes, index) => {
-        const periodo = `${mes}-${ano}`;
-        return db.collection("usuarios").doc(currentUser.uid).collection("meses").doc(periodo).get()
-            .then(doc => {
-                let entradas = 0, gastos = 0, economia = 0, resultado = 0;
-                
-                if (doc.exists) {
-                    const dados = doc.data();
-                    
-                    if (dados.entradas) {
-                        entradas = (dados.entradas.salario || 0) + (dados.entradas.rendaExtra || 0) + (dados.entradas.ajudaTerceiros || 0) + (dados.entradas.outrosValores || 0);
-                    }
-                    
-                    if (dados.gastosFixos) {
-                        gastos += (dados.gastosFixos.aluguel || 0) + (dados.gastosFixos.agua || 0) + (dados.gastosFixos.luz || 0) + (dados.gastosFixos.internet || 0) + (dados.gastosFixos.telefone || 0) + (dados.gastosFixos.transporte || 0) + (dados.gastosFixos.outrasFixas || 0);
-                    }
-                    
-                    if (dados.gastosVariaveis) {
-                        gastos += (dados.gastosVariaveis.mercado || 0) + (dados.gastosVariaveis.alimentacaoFora || 0) + (dados.gastosVariaveis.delivery || 0) + (dados.gastosVariaveis.lazer || 0) + (dados.gastosVariaveis.roupas || 0) + (dados.gastosVariaveis.assinaturas || 0) + (dados.gastosVariaveis.suplementos || 0) + (dados.gastosVariaveis.outrosVariaveis || 0);
-                    }
-                    
-                    if (dados.gastosInvisiveis) {
-                        gastos += (dados.gastosInvisiveis.impulso || 0) + (dados.gastosInvisiveis.parcelamentos || 0) + (dados.gastosInvisiveis.taxas || 0) + (dados.gastosInvisiveis.pequenos || 0);
-                    }
-                    
-                    if (dados.economia) {
-                        economia = dados.economia.valorEconomizado || 0;
-                    }
-                    
-                    resultado = entradas - gastos;
-                }
-                
-                totalEntradasAnual += entradas;
-                totalGastosAnual += gastos;
-                totalEconomiaAnual += economia;
-                totalResultadoAnual += resultado;
-                
-                return { mes, entradas, gastos, economia, resultado, index };
-            });
-    });
-    
-    Promise.all(promessas).then(resultados => {
-        resultados.sort((a, b) => a.index - b.index);
-        
-        resultados.forEach(r => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${r.mes}</td>
-                <td style="text-align: right; color: #28a745;">R$ ${r.entradas.toFixed(2)}</td>
-                <td style="text-align: right; color: #dc3545;">R$ ${r.gastos.toFixed(2)}</td>
-                <td style="text-align: right; color: #17a2b8;">R$ ${r.economia.toFixed(2)}</td>
-                <td style="text-align: right; color: ${r.resultado >= 0 ? '#28a745' : '#dc3545'};">R$ ${r.resultado.toFixed(2)}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-        
-        document.getElementById("totalAnualEntradas").textContent = `R$ ${totalEntradasAnual.toFixed(2)}`;
-        document.getElementById("totalAnualGastos").textContent = `R$ ${totalGastosAnual.toFixed(2)}`;
-        document.getElementById("totalAnualEconomia").textContent = `R$ ${totalEconomiaAnual.toFixed(2)}`;
-        document.getElementById("totalAnualResultado").textContent = `R$ ${totalResultadoAnual.toFixed(2)}`;
-        document.getElementById("totalAnualResultado").style.color = totalResultadoAnual >= 0 ? '#28a745' : '#dc3545';
-    }).catch(e => console.error("Erro ao atualizar tabela anual:", e));
-}
-
-function calcularSemSalvar(){
-    const s=Number(document.getElementById("salario").value)||0,re=Number(document.getElementById("rendaExtra").value)||0,at=Number(document.getElementById("ajudaTerceiros").value)||0,ov=Number(document.getElementById("outrosValores").value)||0,te=s+re+at+ov;
-    document.getElementById("totalEntradas").textContent=`R$ ${te.toFixed(2)}`;document.getElementById("totalEntradasBox").textContent=`R$ ${te.toFixed(2)}`;
-    const fixos=["aluguel","agua","luz","internet","telefone","transporte","outrasFixas"];let tf=fixos.reduce((sum,id)=>sum+(Number(document.getElementById(id).value)||0),0);
-    document.getElementById("totalFixosBox").textContent=`R$ ${tf.toFixed(2)}`;document.getElementById("detailFixos").textContent=`R$ ${tf.toFixed(2)}`;
-    const variaveis=["mercado","alimentacaoFora","delivery","lazer","roupas","assinaturas","suplementos","outrosVariaveis"];let tv=variaveis.reduce((sum,id)=>sum+(Number(document.getElementById(id).value)||0),0);
-    document.getElementById("totalVariaveisBox").textContent=`R$ ${tv.toFixed(2)}`;document.getElementById("detailVariaveis").textContent=`R$ ${tv.toFixed(2)}`;
-    const invisiveis=["impulso","parcelamentos","taxas","pequenos"];let ti=invisiveis.reduce((sum,id)=>sum+(Number(document.getElementById(id).value)||0),0);
-    document.getElementById("totalInvisiveisBox").textContent=`R$ ${ti.toFixed(2)}`;document.getElementById("detailInvisiveis").textContent=`R$ ${ti.toFixed(2)}`;
-    if(ti>0){document.getElementById("impactoAnual").style.display="block";document.getElementById("impactoValor").textContent=`R$ ${(ti*12).toFixed(2)}`;}else{document.getElementById("impactoAnual").style.display="none";}
-    const tg=tf+tv+ti;document.getElementById("totalGastos").textContent=`R$ ${tg.toFixed(2)}`;
-    const ve=Number(document.getElementById("valorEconomizado").value)||0;document.getElementById("totalEconomizado").textContent=`R$ ${ve.toFixed(2)}`;
-    const meta=Number(document.getElementById("metaMensal").value)||0;if(meta>0){const p=(ve/meta)*100;document.getElementById("progressoPorcentagem").textContent=`${p.toFixed(0)}%`;document.getElementById("progressFill").style.width=`${Math.min(p,100)}%`;document.getElementById("progressText").textContent=p>=100?"Meta atingida!":"";}else{document.getElementById("progressoPorcentagem").textContent="0%";document.getElementById("progressFill").style.width="0%";document.getElementById("progressText").textContent="";}
-    const rf=te-tg;document.getElementById("resultadoFinal").textContent=`R$ ${rf.toFixed(2)}`;const rc=document.getElementById("resultadoCard");rc.className="card";rc.classList.add(rf>=0?"green":"red");
-}
-
-function calcular(){
-    calcularSemSalvar();
-    salvarDados();
-    atualizarTabelaAnual();
-}
-
-function trocarPeriodo(){
-    carregarDados();
-    atualizarTabelaAnual();
-}
-
-function openTab(evt,tabName){
-    const tc=document.getElementsByClassName("tab-content");
-    for(let i=0;i<tc.length;i++)tc[i].classList.remove("active");
-    const tabs=document.getElementsByClassName("tab");
-    for(let i=0;i<tabs.length;i++)tabs[i].classList.remove("active");
-    document.getElementById(tabName).classList.add("active");
-    evt.currentTarget.classList.add("active");
-}
-
-window.login=login;
-window.register=register;
-window.logout=logout;
-window.calcular=calcular;
-window.trocarPeriodo=trocarPeriodo;
-window.openTab=openTab;
-window.salvarNome=salvarNome;
-    </script>
-</body>
-</html>
+            delivery:
