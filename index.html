@@ -221,10 +221,12 @@ const firebaseConfig={apiKey:"AIzaSyBW6aHvIHMgpDTk7b_kBVwncmQKcetvh-4",authDomai
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
 const db=firebase.firestore();
+
 function login(){auth.signInWithEmailAndPassword(document.getElementById("email").value,document.getElementById("senha").value).catch(e=>alert(e.message));}
 function register(){auth.createUserWithEmailAndPassword(document.getElementById("email").value,document.getElementById("senha").value).then(()=>alert("Conta criada com sucesso!")).catch(e=>alert(e.message));}
 function logout(){if(confirm('Deseja realmente sair?'))auth.signOut();}
 auth.onAuthStateChanged(user=>{if(user){document.getElementById("login").style.display="none";document.getElementById("app").style.display="block";document.getElementById("btnSair").style.display="block";}else{document.getElementById("login").style.display="block";document.getElementById("app").style.display="none";document.getElementById("btnSair").style.display="none";}});
+
 function calcular(){
 const s=Number(document.getElementById("salario").value)||0,re=Number(document.getElementById("rendaExtra").value)||0,at=Number(document.getElementById("ajudaTerceiros").value)||0,ov=Number(document.getElementById("outrosValores").value)||0,te=s+re+at+ov;
 document.getElementById("totalEntradas").textContent=`R$ ${te.toFixed(2)}`;document.getElementById("totalEntradasBox").textContent=`R$ ${te.toFixed(2)}`;
@@ -240,9 +242,35 @@ const ve=Number(document.getElementById("valorEconomizado").value)||0;document.g
 const meta=Number(document.getElementById("metaMensal").value)||0;if(meta>0){const p=(ve/meta)*100;document.getElementById("progressoPorcentagem").textContent=`${p.toFixed(0)}%`;document.getElementById("progressFill").style.width=`${Math.min(p,100)}%`;document.getElementById("progressText").textContent=p>=100?"Meta atingida!":"";}else{document.getElementById("progressoPorcentagem").textContent="0%";document.getElementById("progressFill").style.width="0%";document.getElementById("progressText").textContent="";}
 const rf=te-tg;document.getElementById("resultadoFinal").textContent=`R$ ${rf.toFixed(2)}`;const rc=document.getElementById("resultadoCard");rc.className="card";rc.classList.add(rf>=0?"green":"red");
 }
+
 function trocarPeriodo(){calcular();}
-function openTab(evt,tabName){const tc=document.getElementsByClassName("tab-content");for(let i=0;i<tc.length;i++)tc[i].className=tc[i].className.replace(" active","");const tabs=document.getElementsByClassName("tab");for(let i=0;i<tabs.length;i++)tabs[i].className=tabs[i].className.replace(" active","");document.getElementById(tabName).className+=" active";evt.currentTarget.className+=" active";}
-window.login=login;window.register=register;window.logout=logout;window.calcular=calcular;window.trocarPeriodo=trocarPeriodo;window.openTab=openTab;
+
+function openTab(evt, tabName) {
+    // Remove a classe active de todos os conteúdos
+    const tabContents = document.getElementsByClassName("tab-content");
+    for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove("active");
+    }
+    
+    // Remove a classe active de todos os botões
+    const tabs = document.getElementsByClassName("tab");
+    for (let i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove("active");
+    }
+    
+    // Adiciona a classe active no conteúdo selecionado
+    document.getElementById(tabName).classList.add("active");
+    
+    // Adiciona a classe active no botão clicado
+    evt.currentTarget.classList.add("active");
+}
+
+window.login=login;
+window.register=register;
+window.logout=logout;
+window.calcular=calcular;
+window.trocarPeriodo=trocarPeriodo;
+window.openTab=openTab;
     </script>
 </body>
 </html>
