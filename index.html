@@ -57,7 +57,6 @@
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         th { background: #667eea; color: white; padding: 15px; text-align: left; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
         td { padding: 12px 15px; border-bottom: 1px solid #dee2e6; }
-        td input { width: 100%; padding: 8px; border: 1px solid #dee2e6; border-radius: 5px; text-align: right; }
         tr:hover { background: #f8f9fa; }
         tfoot { background: #f8f9fa; font-weight: bold; }
         tfoot td { border-top: 3px solid #667eea; font-size: 16px; }
@@ -71,9 +70,8 @@
         #login input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #dee2e6; border-radius: 8px; font-size: 16px; }
         #login button { width: 100%; padding: 12px; margin-top: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
         #login button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
-        #btnSair { position: absolute; top: 20px; right: 20px; padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: 2px solid white; border-radius: 8px; cursor: pointer; font-weight: 600; display: none; transition: all 0.3s; }
+        #btnSair { position: absolute; top: 20px; right: 20px; padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: 2px solid white; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
         #btnSair:hover { background: rgba(255,255,255,0.3); }
-        .debug-info { position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 8px; font-size: 12px; max-width: 300px; display: none; }
         @media print { .tabs { display: none; } body { background: white; } }
     </style>
 </head>
@@ -217,140 +215,300 @@
         </div>
     </div>
 
-    <div class="debug-info" id="debugInfo">Status: Aguardando...</div>
-    
     <script>
 const firebaseConfig={apiKey:"AIzaSyBW6aHvIHMgpDTk7b_kBVwncmQKcetvh-4",authDomain:"cfi-aguiaacess.firebaseapp.com",projectId:"cfi-aguiaacess",storageBucket:"cfi-aguiaacess.firebasestorage.app",messagingSenderId:"330279402203",appId:"1:330279402203:web:f80ffaa25bd5f1b544eafe"};
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
 const db=firebase.firestore();
+let currentUser=null;
 
-let currentUser = null;
-
-function debug(msg) {
-    console.log(msg);
-    const debugEl = document.getElementById("debugInfo");
-    if (debugEl) {
-        debugEl.style.display = "block";
-        debugEl.textContent = msg;
-        setTimeout(() => debugEl.style.display = "none", 3000);
-    }
-}
-
-function login(){
-    auth.signInWithEmailAndPassword(document.getElementById("email").value,document.getElementById("senha").value)
-        .then(() => debug("Login realizado!"))
-        .catch(e => {
-            alert(e.message);
-            debug("Erro no login: " + e.message);
-        });
-}
-
-function register(){
-    auth.createUserWithEmailAndPassword(document.getElementById("email").value,document.getElementById("senha").value)
-        .then(() => {
-            alert("Conta criada com sucesso!");
-            debug("Conta criada!");
-        })
-        .catch(e => {
-            alert(e.message);
-            debug("Erro ao criar conta: " + e.message);
-        });
-}
-
-function logout(){
-    if(confirm('Deseja realmente sair?')) {
-        auth.signOut();
-        debug("Logout realizado!");
-    }
-}
+function login(){auth.signInWithEmailAndPassword(document.getElementById("email").value,document.getElementById("senha").value).catch(e=>alert(e.message));}
+function register(){auth.createUserWithEmailAndPassword(document.getElementById("email").value,document.getElementById("senha").value).then(()=>alert("Conta criada com sucesso!")).catch(e=>alert(e.message));}
+function logout(){if(confirm('Deseja realmente sair?'))auth.signOut();}
 
 auth.onAuthStateChanged(user=>{
     if(user){
-        currentUser = user;
+        currentUser=user;
         document.getElementById("login").style.display="none";
         document.getElementById("app").style.display="block";
-        document.getElementById("btnSair").style.display="block";
-        
-        if (!document.getElementById("month").value) {
-            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-            const dataAtual = new Date();
-            document.getElementById("month").value = meses[dataAtual.getMonth()];
-            document.getElementById("year").value = dataAtual.getFullYear();
+        if(!document.getElementById("month").value){
+            const meses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+            const d=new Date();
+            document.getElementById("month").value=meses[d.getMonth()];
+            document.getElementById("year").value=d.getFullYear();
         }
-        
-        debug("Usuário logado: " + user.email);
         carregarNomeUsuario();
         carregarDados();
         atualizarTabelaAnual();
     }else{
-        currentUser = null;
+        currentUser=null;
         document.getElementById("login").style.display="block";
         document.getElementById("app").style.display="none";
-        document.getElementById("btnSair").style.display="none";
-        debug("Usuário deslogado");
     }
 });
 
-function getPeriodoAtual() {
-    const mes = document.getElementById("month").value.trim() || "Janeiro";
-    const ano = document.getElementById("year").value.trim() || "2025";
-    return `${mes}-${ano}`;
+function getPeriodoAtual(){return `${document.getElementById("month").value.trim()||"Janeiro"}-${document.getElementById("year").value.trim()||"2025"}`;}
+
+function salvarNome(){
+    if(!currentUser)return;
+    db.collection("usuarios").doc(currentUser.uid).set({userName:document.getElementById("userName").value},{merge:true});
 }
 
-function salvarNome() {
-    if (!currentUser) return;
-    const nome = document.getElementById("userName").value;
-    db.collection("usuarios").doc(currentUser.uid).set({
-        userName: nome
-    }, { merge: true })
-        .then(() => debug("Nome salvo: " + nome))
-        .catch(e => {
-            console.error("Erro ao salvar nome:", e);
-            debug("Erro ao salvar nome");
-        });
-}
-
-function carregarNomeUsuario() {
-    if (!currentUser) return;
-    db.collection("usuarios").doc(currentUser.uid).get().then(doc => {
-        if (doc.exists && doc.data().userName) {
-            document.getElementById("userName").value = doc.data().userName;
-            debug("Nome carregado");
-        }
-    }).catch(e => {
-        console.error("Erro ao carregar nome:", e);
-        debug("Erro ao carregar nome");
+function carregarNomeUsuario(){
+    if(!currentUser)return;
+    db.collection("usuarios").doc(currentUser.uid).get().then(doc=>{
+        if(doc.exists&&doc.data().userName)document.getElementById("userName").value=doc.data().userName;
     });
 }
 
-function salvarDados() {
-    if (!currentUser) {
-        debug("Não há usuário logado para salvar");
-        return;
+function salvarDados(){
+    if(!currentUser)return;
+    const periodo=getPeriodoAtual();
+    const dados={
+        userName:document.getElementById("userName").value,
+        timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+        entradas:{
+            salario:Number(document.getElementById("salario").value)||0,
+            rendaExtra:Number(document.getElementById("rendaExtra").value)||0,
+            ajudaTerceiros:Number(document.getElementById("ajudaTerceiros").value)||0,
+            outrosValores:Number(document.getElementById("outrosValores").value)||0
+        },
+        gastosFixos:{
+            aluguel:Number(document.getElementById("aluguel").value)||0,
+            agua:Number(document.getElementById("agua").value)||0,
+            luz:Number(document.getElementById("luz").value)||0,
+            internet:Number(document.getElementById("internet").value)||0,
+            telefone:Number(document.getElementById("telefone").value)||0,
+            transporte:Number(document.getElementById("transporte").value)||0,
+            outrasFixas:Number(document.getElementById("outrasFixas").value)||0
+        },
+        gastosVariaveis:{
+            mercado:Number(document.getElementById("mercado").value)||0,
+            alimentacaoFora:Number(document.getElementById("alimentacaoFora").value)||0,
+            delivery:Number(document.getElementById("delivery").value)||0,
+            lazer:Number(document.getElementById("lazer").value)||0,
+            roupas:Number(document.getElementById("roupas").value)||0,
+            assinaturas:Number(document.getElementById("assinaturas").value)||0,
+            suplementos:Number(document.getElementById("suplementos").value)||0,
+            outrosVariaveis:Number(document.getElementById("outrosVariaveis").value)||0
+        },
+        gastosInvisiveis:{
+            impulso:Number(document.getElementById("impulso").value)||0,
+            parcelamentos:Number(document.getElementById("parcelamentos").value)||0,
+            taxas:Number(document.getElementById("taxas").value)||0,
+            pequenos:Number(document.getElementById("pequenos").value)||0
+        },
+        economia:{
+            valorEconomizado:Number(document.getElementById("valorEconomizado").value)||0,
+            metaMensal:Number(document.getElementById("metaMensal").value)||0
+        }
+    };
+    db.collection("usuarios").doc(currentUser.uid).collection("periodos").doc(periodo).set(dados,{merge:true});
+}
+
+function carregarDados(){
+    if(!currentUser)return;
+    const periodo=getPeriodoAtual();
+    db.collection("usuarios").doc(currentUser.uid).collection("periodos").doc(periodo).get().then(doc=>{
+        if(doc.exists){
+            const d=doc.data();
+            if(d.entradas){
+                document.getElementById("salario").value=d.entradas.salario||0;
+                document.getElementById("rendaExtra").value=d.entradas.rendaExtra||0;
+                document.getElementById("ajudaTerceiros").value=d.entradas.ajudaTerceiros||0;
+                document.getElementById("outrosValores").value=d.entradas.outrosValores||0;
+            }
+            if(d.gastosFixos){
+                document.getElementById("aluguel").value=d.gastosFixos.aluguel||0;
+                document.getElementById("agua").value=d.gastosFixos.agua||0;
+                document.getElementById("luz").value=d.gastosFixos.luz||0;
+                document.getElementById("internet").value=d.gastosFixos.internet||0;
+                document.getElementById("telefone").value=d.gastosFixos.telefone||0;
+                document.getElementById("transporte").value=d.gastosFixos.transporte||0;
+                document.getElementById("outrasFixas").value=d.gastosFixos.outrasFixas||0;
+            }
+            if(d.gastosVariaveis){
+                document.getElementById("mercado").value=d.gastosVariaveis.mercado||0;
+                document.getElementById("alimentacaoFora").value=d.gastosVariaveis.alimentacaoFora||0;
+                document.getElementById("delivery").value=d.gastosVariaveis.delivery||0;
+                document.getElementById("lazer").value=d.gastosVariaveis.lazer||0;
+                document.getElementById("roupas").value=d.gastosVariaveis.roupas||0;
+                document.getElementById("assinaturas").value=d.gastosVariaveis.assinaturas||0;
+                document.getElementById("suplementos").value=d.gastosVariaveis.suplementos||0;
+                document.getElementById("outrosVariaveis").value=d.gastosVariaveis.outrosVariaveis||0;
+            }
+            if(d.gastosInvisiveis){
+                document.getElementById("impulso").value=d.gastosInvisiveis.impulso||0;
+                document.getElementById("parcelamentos").value=d.gastosInvisiveis.parcelamentos||0;
+                document.getElementById("taxas").value=d.gastosInvisiveis.taxas||0;
+                document.getElementById("pequenos").value=d.gastosInvisiveis.pequenos||0;
+            }
+            if(d.economia){
+                document.getElementById("valorEconomizado").value=d.economia.valorEconomizado||0;
+                document.getElementById("metaMensal").value=d.economia.metaMensal||0;
+            }
+            calcular();
+        }
+    });
+}
+
+function trocarPeriodo(){
+    carregarDados();
+}
+
+function calcular(){
+    const salario=Number(document.getElementById("salario").value)||0;
+    const rendaExtra=Number(document.getElementById("rendaExtra").value)||0;
+    const ajudaTerceiros=Number(document.getElementById("ajudaTerceiros").value)||0;
+    const outrosValores=Number(document.getElementById("outrosValores").value)||0;
+    const totalEntradas=salario+rendaExtra+ajudaTerceiros+outrosValores;
+    
+    const aluguel=Number(document.getElementById("aluguel").value)||0;
+    const agua=Number(document.getElementById("agua").value)||0;
+    const luz=Number(document.getElementById("luz").value)||0;
+    const internet=Number(document.getElementById("internet").value)||0;
+    const telefone=Number(document.getElementById("telefone").value)||0;
+    const transporte=Number(document.getElementById("transporte").value)||0;
+    const outrasFixas=Number(document.getElementById("outrasFixas").value)||0;
+    const totalFixos=aluguel+agua+luz+internet+telefone+transporte+outrasFixas;
+    
+    const mercado=Number(document.getElementById("mercado").value)||0;
+    const alimentacaoFora=Number(document.getElementById("alimentacaoFora").value)||0;
+    const delivery=Number(document.getElementById("delivery").value)||0;
+    const lazer=Number(document.getElementById("lazer").value)||0;
+    const roupas=Number(document.getElementById("roupas").value)||0;
+    const assinaturas=Number(document.getElementById("assinaturas").value)||0;
+    const suplementos=Number(document.getElementById("suplementos").value)||0;
+    const outrosVariaveis=Number(document.getElementById("outrosVariaveis").value)||0;
+    const totalVariaveis=mercado+alimentacaoFora+delivery+lazer+roupas+assinaturas+suplementos+outrosVariaveis;
+    
+    const impulso=Number(document.getElementById("impulso").value)||0;
+    const parcelamentos=Number(document.getElementById("parcelamentos").value)||0;
+    const taxas=Number(document.getElementById("taxas").value)||0;
+    const pequenos=Number(document.getElementById("pequenos").value)||0;
+    const totalInvisiveis=impulso+parcelamentos+taxas+pequenos;
+    
+    const valorEconomizado=Number(document.getElementById("valorEconomizado").value)||0;
+    const metaMensal=Number(document.getElementById("metaMensal").value)||0;
+    
+    const totalGastos=totalFixos+totalVariaveis+totalInvisiveis;
+    const resultado=totalEntradas-totalGastos-valorEconomizado;
+    
+    document.getElementById("totalEntradas").textContent="R$ "+totalEntradas.toFixed(2);
+    document.getElementById("totalEntradasBox").textContent="R$ "+totalEntradas.toFixed(2);
+    document.getElementById("totalGastos").textContent="R$ "+totalGastos.toFixed(2);
+    document.getElementById("totalEconomizado").textContent="R$ "+valorEconomizado.toFixed(2);
+    document.getElementById("resultadoFinal").textContent="R$ "+resultado.toFixed(2);
+    
+    document.getElementById("detailFixos").textContent="R$ "+totalFixos.toFixed(2);
+    document.getElementById("detailVariaveis").textContent="R$ "+totalVariaveis.toFixed(2);
+    document.getElementById("detailInvisiveis").textContent="R$ "+totalInvisiveis.toFixed(2);
+    
+    document.getElementById("totalFixosBox").textContent="R$ "+totalFixos.toFixed(2);
+    document.getElementById("totalVariaveisBox").textContent="R$ "+totalVariaveis.toFixed(2);
+    document.getElementById("totalInvisiveisBox").textContent="R$ "+totalInvisiveis.toFixed(2);
+    
+    const resultadoCard=document.getElementById("resultadoCard");
+    resultadoCard.className="card";
+    if(resultado>0)resultadoCard.classList.add("green");
+    else if(resultado<0)resultadoCard.classList.add("red");
+    else resultadoCard.classList.add("orange");
+    
+    if(totalInvisiveis>0){
+        document.getElementById("impactoAnual").style.display="block";
+        document.getElementById("impactoValor").textContent="R$ "+(totalInvisiveis*12).toFixed(2);
+    }else{
+        document.getElementById("impactoAnual").style.display="none";
     }
     
-    const periodo = getPeriodoAtual();
+    if(metaMensal>0){
+        const progresso=(valorEconomizado/metaMensal)*100;
+        const progressoLimitado=Math.min(progresso,100);
+        document.getElementById("progressFill").style.width=progressoLimitado+"%";
+        document.getElementById("progressoPorcentagem").textContent=progresso.toFixed(1)+"%";
+        document.getElementById("progressText").textContent=progressoLimitado.toFixed(0)+"%";
+    }else{
+        document.getElementById("progressFill").style.width="0%";
+        document.getElementById("progressoPorcentagem").textContent="0%";
+        document.getElementById("progressText").textContent="";
+    }
     
-    const dados = {
-        userName: document.getElementById("userName").value,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        entradas: {
-            salario: Number(document.getElementById("salario").value) || 0,
-            rendaExtra: Number(document.getElementById("rendaExtra").value) || 0,
-            ajudaTerceiros: Number(document.getElementById("ajudaTerceiros").value) || 0,
-            outrosValores: Number(document.getElementById("outrosValores").value) || 0
-        },
-        gastosFixos: {
-            aluguel: Number(document.getElementById("aluguel").value) || 0,
-            agua: Number(document.getElementById("agua").value) || 0,
-            luz: Number(document.getElementById("luz").value) || 0,
-            internet: Number(document.getElementById("internet").value) || 0,
-            telefone: Number(document.getElementById("telefone").value) || 0,
-            transporte: Number(document.getElementById("transporte").value) || 0,
-            outrasFixas: Number(document.getElementById("outrasFixas").value) || 0
-        },
-        gastosVariaveis: {
-            mercado: Number(document.getElementById("mercado").value) || 0,
-            alimentacaoFora: Number(document.getElementById("alimentacaoFora").value) || 0,
-            delivery:
+    salvarDados();
+}
+
+function openTab(evt,tabName){
+    const tabcontent=document.getElementsByClassName("tab-content");
+    for(let i=0;i<tabcontent.length;i++)tabcontent[i].className="tab-content";
+    const tabs=document.getElementsByClassName("tab");
+    for(let i=0;i<tabs.length;i++)tabs[i].className="tab";
+    document.getElementById(tabName).className="tab-content active";
+    evt.currentTarget.className="tab active";
+}
+
+function atualizarTabelaAnual(){
+    if(!currentUser)return;
+    const ano=document.getElementById("year").value||new Date().getFullYear();
+    const meses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+    const tbody=document.getElementById("tabelaAnual");
+    tbody.innerHTML="";
+    
+    let totalAnualEntradas=0;
+    let totalAnualGastos=0;
+    let totalAnualEconomia=0;
+    
+    meses.forEach(mes=>{
+        const periodo=`${mes}-${ano}`;
+        db.collection("usuarios").doc(currentUser.uid).collection("periodos").doc(periodo).get().then(doc=>{
+            const row=tbody.insertRow();
+            row.insertCell(0).textContent=mes;
+            
+            if(doc.exists){
+                const d=doc.data();
+                const entradas=(d.entradas?.salario||0)+(d.entradas?.rendaExtra||0)+(d.entradas?.ajudaTerceiros||0)+(d.entradas?.outrosValores||0);
+                const fixos=(d.gastosFixos?.aluguel||0)+(d.gastosFixos?.agua||0)+(d.gastosFixos?.luz||0)+(d.gastosFixos?.internet||0)+(d.gastosFixos?.telefone||0)+(d.gastosFixos?.transporte||0)+(d.gastosFixos?.outrasFixas||0);
+                const variaveis=(d.gastosVariaveis?.mercado||0)+(d.gastosVariaveis?.alimentacaoFora||0)+(d.gastosVariaveis?.delivery||0)+(d.gastosVariaveis?.lazer||0)+(d.gastosVariaveis?.roupas||0)+(d.gastosVariaveis?.assinaturas||0)+(d.gastosVariaveis?.suplementos||0)+(d.gastosVariaveis?.outrosVariaveis||0);
+                const invisiveis=(d.gastosInvisiveis?.impulso||0)+(d.gastosInvisiveis?.parcelamentos||0)+(d.gastosInvisiveis?.taxas||0)+(d.gastosInvisiveis?.pequenos||0);
+                const gastos=fixos+variaveis+invisiveis;
+                const economia=d.economia?.valorEconomizado||0;
+                const resultado=entradas-gastos-economia;
+                
+                totalAnualEntradas+=entradas;
+                totalAnualGastos+=gastos;
+                totalAnualEconomia+=economia;
+                
+                const c1=row.insertCell(1);
+                c1.textContent="R$ "+entradas.toFixed(2);
+                c1.style.textAlign="right";
+                c1.style.color="#28a745";
+                
+                const c2=row.insertCell(2);
+                c2.textContent="R$ "+gastos.toFixed(2);
+                c2.style.textAlign="right";
+                c2.style.color="#dc3545";
+                
+                const c3=row.insertCell(3);
+                c3.textContent="R$ "+economia.toFixed(2);
+                c3.style.textAlign="right";
+                c3.style.color="#17a2b8";
+                
+                const c4=row.insertCell(4);
+                c4.textContent="R$ "+resultado.toFixed(2);
+                c4.style.textAlign="right";
+                c4.style.color=resultado>=0?"#28a745":"#dc3545";
+                
+                document.getElementById("totalAnualEntradas").textContent="R$ "+totalAnualEntradas.toFixed(2);
+                document.getElementById("totalAnualGastos").textContent="R$ "+totalAnualGastos.toFixed(2);
+                document.getElementById("totalAnualEconomia").textContent="R$ "+totalAnualEconomia.toFixed(2);
+                document.getElementById("totalAnualResultado").textContent="R$ "+(totalAnualEntradas-totalAnualGastos-totalAnualEconomia).toFixed(2);
+            }else{
+                row.insertCell(1).textContent="R$ 0,00";
+                row.insertCell(2).textContent="R$ 0,00";
+                row.insertCell(3).textContent="R$ 0,00";
+                row.insertCell(4).textContent="R$ 0,00";
+            }
+        });
+    });
+}
+    </script>
+</body>
+</html>
