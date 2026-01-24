@@ -1,4 +1,4 @@
-(ELE FEZ ASSIM AGORA) <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -242,8 +242,18 @@ auth.onAuthStateChanged(user=>{
         document.getElementById("login").style.display="none";
         document.getElementById("app").style.display="block";
         document.getElementById("btnSair").style.display="block";
+        
+        // Inicializa com valores padrão se estiverem vazios
+        if (!document.getElementById("month").value) {
+            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            const dataAtual = new Date();
+            document.getElementById("month").value = meses[dataAtual.getMonth()];
+            document.getElementById("year").value = dataAtual.getFullYear();
+        }
+        
         carregarNomeUsuario();
-        trocarPeriodo();
+        carregarDados();
+        atualizarTabelaAnual();
     }else{
         currentUser = null;
         document.getElementById("login").style.display="block";
@@ -487,6 +497,7 @@ function calcular(){
 
 function trocarPeriodo(){
     carregarDados();
+    atualizarTabelaAnual();
 }
 
 function openTab(evt,tabName){
