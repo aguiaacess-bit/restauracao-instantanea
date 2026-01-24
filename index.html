@@ -345,46 +345,47 @@ function carregarDados() {
                 const dados = doc.data();
                 
                 if (dados.entradas) {
-                    document.getElementById("salario").value = dados.entradas.salario || 0;
-                    document.getElementById("rendaExtra").value = dados.entradas.rendaExtra || 0;
-                    document.getElementById("ajudaTerceiros").value = dados.entradas.ajudaTerceiros || 0;
-                    document.getElementById("outrosValores").value = dados.entradas.outrosValores || 0;
+                    document.getElementById("salario").value = dados.entradas.salario || "";
+                    document.getElementById("rendaExtra").value = dados.entradas.rendaExtra || "";
+                    document.getElementById("ajudaTerceiros").value = dados.entradas.ajudaTerceiros || "";
+                    document.getElementById("outrosValores").value = dados.entradas.outrosValores || "";
                 }
                 
                 if (dados.gastosFixos) {
-                    document.getElementById("aluguel").value = dados.gastosFixos.aluguel || 0;
-                    document.getElementById("agua").value = dados.gastosFixos.agua || 0;
-                    document.getElementById("luz").value = dados.gastosFixos.luz || 0;
-                    document.getElementById("internet").value = dados.gastosFixos.internet || 0;
-                    document.getElementById("telefone").value = dados.gastosFixos.telefone || 0;
-                    document.getElementById("transporte").value = dados.gastosFixos.transporte || 0;
-                    document.getElementById("outrasFixas").value = dados.gastosFixos.outrasFixas || 0;
+                    document.getElementById("aluguel").value = dados.gastosFixos.aluguel || "";
+                    document.getElementById("agua").value = dados.gastosFixos.agua || "";
+                    document.getElementById("luz").value = dados.gastosFixos.luz || "";
+                    document.getElementById("internet").value = dados.gastosFixos.internet || "";
+                    document.getElementById("telefone").value = dados.gastosFixos.telefone || "";
+                    document.getElementById("transporte").value = dados.gastosFixos.transporte || "";
+                    document.getElementById("outrasFixas").value = dados.gastosFixos.outrasFixas || "";
                 }
                 
                 if (dados.gastosVariaveis) {
-                    document.getElementById("mercado").value = dados.gastosVariaveis.mercado || 0;
-                    document.getElementById("alimentacaoFora").value = dados.gastosVariaveis.alimentacaoFora || 0;
-                    document.getElementById("delivery").value = dados.gastosVariaveis.delivery || 0;
-                    document.getElementById("lazer").value = dados.gastosVariaveis.lazer || 0;
-                    document.getElementById("roupas").value = dados.gastosVariaveis.roupas || 0;
-                    document.getElementById("assinaturas").value = dados.gastosVariaveis.assinaturas || 0;
-                    document.getElementById("suplementos").value = dados.gastosVariaveis.suplementos || 0;
-                    document.getElementById("outrosVariaveis").value = dados.gastosVariaveis.outrosVariaveis || 0;
+                    document.getElementById("mercado").value = dados.gastosVariaveis.mercado || "";
+                    document.getElementById("alimentacaoFora").value = dados.gastosVariaveis.alimentacaoFora || "";
+                    document.getElementById("delivery").value = dados.gastosVariaveis.delivery || "";
+                    document.getElementById("lazer").value = dados.gastosVariaveis.lazer || "";
+                    document.getElementById("roupas").value = dados.gastosVariaveis.roupas || "";
+                    document.getElementById("assinaturas").value = dados.gastosVariaveis.assinaturas || "";
+                    document.getElementById("suplementos").value = dados.gastosVariaveis.suplementos || "";
+                    document.getElementById("outrosVariaveis").value = dados.gastosVariaveis.outrosVariaveis || "";
                 }
                 
                 if (dados.gastosInvisiveis) {
-                    document.getElementById("impulso").value = dados.gastosInvisiveis.impulso || 0;
-                    document.getElementById("parcelamentos").value = dados.gastosInvisiveis.parcelamentos || 0;
-                    document.getElementById("taxas").value = dados.gastosInvisiveis.taxas || 0;
-                    document.getElementById("pequenos").value = dados.gastosInvisiveis.pequenos || 0;
+                    document.getElementById("impulso").value = dados.gastosInvisiveis.impulso || "";
+                    document.getElementById("parcelamentos").value = dados.gastosInvisiveis.parcelamentos || "";
+                    document.getElementById("taxas").value = dados.gastosInvisiveis.taxas || "";
+                    document.getElementById("pequenos").value = dados.gastosInvisiveis.pequenos || "";
                 }
                 
                 if (dados.economia) {
-                    document.getElementById("valorEconomizado").value = dados.economia.valorEconomizado || 0;
-                    document.getElementById("metaMensal").value = dados.economia.metaMensal || 0;
+                    document.getElementById("valorEconomizado").value = dados.economia.valorEconomizado || "";
+                    document.getElementById("metaMensal").value = dados.economia.metaMensal || "";
                 }
                 
-                calcular();
+                // Importante: recalcular após carregar os dados
+                setTimeout(() => calcularSemSalvar(), 100);
             } else {
                 limparCampos();
             }
@@ -476,7 +477,7 @@ function atualizarTabelaAnual() {
     }).catch(e => console.error("Erro ao atualizar tabela anual:", e));
 }
 
-function calcular(){
+function calcularSemSalvar(){
     const s=Number(document.getElementById("salario").value)||0,re=Number(document.getElementById("rendaExtra").value)||0,at=Number(document.getElementById("ajudaTerceiros").value)||0,ov=Number(document.getElementById("outrosValores").value)||0,te=s+re+at+ov;
     document.getElementById("totalEntradas").textContent=`R$ ${te.toFixed(2)}`;document.getElementById("totalEntradasBox").textContent=`R$ ${te.toFixed(2)}`;
     const fixos=["aluguel","agua","luz","internet","telefone","transporte","outrasFixas"];let tf=fixos.reduce((sum,id)=>sum+(Number(document.getElementById(id).value)||0),0);
@@ -490,7 +491,10 @@ function calcular(){
     const ve=Number(document.getElementById("valorEconomizado").value)||0;document.getElementById("totalEconomizado").textContent=`R$ ${ve.toFixed(2)}`;
     const meta=Number(document.getElementById("metaMensal").value)||0;if(meta>0){const p=(ve/meta)*100;document.getElementById("progressoPorcentagem").textContent=`${p.toFixed(0)}%`;document.getElementById("progressFill").style.width=`${Math.min(p,100)}%`;document.getElementById("progressText").textContent=p>=100?"Meta atingida!":"";}else{document.getElementById("progressoPorcentagem").textContent="0%";document.getElementById("progressFill").style.width="0%";document.getElementById("progressText").textContent="";}
     const rf=te-tg;document.getElementById("resultadoFinal").textContent=`R$ ${rf.toFixed(2)}`;const rc=document.getElementById("resultadoCard");rc.className="card";rc.classList.add(rf>=0?"green":"red");
-    
+}
+
+function calcular(){
+    calcularSemSalvar();
     salvarDados();
     atualizarTabelaAnual();
 }
