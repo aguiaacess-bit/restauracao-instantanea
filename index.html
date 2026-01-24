@@ -4,8 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CFI - Controle Financeiro e Investimento</title>
+    
+    <!-- FIREBASE SDKs (compatível com HTML puro) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -53,7 +63,9 @@
             font-size: 16px;
         }
         
-        .user-info input::placeholder { color: rgba(255,255,255,0.7); }
+        .user-info input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
         
         .tabs {
             display: flex;
@@ -77,11 +89,25 @@
             color: #495057;
         }
         
-        .tab:hover { background: #dee2e6; }
-        .tab.active { background: white; color: #667eea; border-bottom: 3px solid #667eea; }
+        .tab:hover {
+            background: #dee2e6;
+        }
         
-        .tab-content { display: none; padding: 30px; animation: fadeIn 0.3s; }
-        .tab-content.active { display: block; }
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
         
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -102,10 +128,25 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
-        .card.green { background: #d4edda; border-color: #28a745; }
-        .card.red { background: #f8d7da; border-color: #dc3545; }
-        .card.blue { background: #d1ecf1; border-color: #17a2b8; }
-        .card.orange { background: #fff3cd; border-color: #ffc107; }
+        .card.green {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .card.red {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .card.blue {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+        }
+        
+        .card.orange {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
         
         .card-label {
             font-size: 13px;
@@ -116,7 +157,10 @@
             letter-spacing: 0.5px;
         }
         
-        .card-value { font-size: 28px; font-weight: bold; }
+        .card-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
         
         .form-section {
             background: #f8f9fa;
@@ -125,7 +169,12 @@
             margin-bottom: 20px;
         }
         
-        .form-section h3 { margin-bottom: 5px; color: #495057; font-size: 20px; }
+        .form-section h3 {
+            margin-bottom: 5px;
+            color: #495057;
+            font-size: 20px;
+        }
+        
         .form-section .instruction {
             font-size: 13px;
             color: #6c757d;
@@ -140,7 +189,11 @@
             margin-bottom: 15px;
         }
         
-        .input-field { display: flex; flex-direction: column; }
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+        
         .input-field label {
             font-size: 14px;
             font-weight: 600;
@@ -171,12 +224,31 @@
             text-align: center;
         }
         
-        .total-box.green { border-color: #28a745; background: #d4edda; }
-        .total-box.red { border-color: #dc3545; background: #f8d7da; }
-        .total-box.orange { border-color: #ffc107; background: #fff3cd; }
+        .total-box.green {
+            border-color: #28a745;
+            background: #d4edda;
+        }
         
-        .total-label { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-        .total-value { font-size: 32px; font-weight: bold; }
+        .total-box.red {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .total-box.orange {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+        
+        .total-label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .total-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
         
         .alert-box {
             background: #fff3cd;
@@ -186,10 +258,20 @@
             border-radius: 8px;
         }
         
-        .alert-box.danger { background: #f8d7da; border-left-color: #dc3545; }
-        .alert-box.info { background: #d1ecf1; border-left-color: #17a2b8; }
+        .alert-box.danger {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
         
-        .progress-container { margin: 20px 0; }
+        .alert-box.info {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+        
+        .progress-container {
+            margin: 20px 0;
+        }
+        
         .progress-label {
             display: flex;
             justify-content: space-between;
@@ -239,12 +321,32 @@
             letter-spacing: 0.5px;
         }
         
-        td { padding: 12px 15px; border-bottom: 1px solid #dee2e6; }
-        td input { width: 100%; padding: 8px; border: 1px solid #dee2e6; border-radius: 5px; text-align: right; }
-        tr:hover { background: #f8f9fa; }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
         
-        tfoot { background: #f8f9fa; font-weight: bold; }
-        tfoot td { border-top: 3px solid #667eea; font-size: 16px; }
+        td input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            text-align: right;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        tfoot {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        tfoot td {
+            border-top: 3px solid #667eea;
+            font-size: 16px;
+        }
         
         .quote {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -265,9 +367,19 @@
             border-bottom: 1px solid #dee2e6;
         }
         
-        .detail-row:last-child { border-bottom: none; }
-        .detail-label { color: #6c757d; font-size: 15px; }
-        .detail-value { font-weight: 600; font-size: 16px; }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            color: #6c757d;
+            font-size: 15px;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            font-size: 16px;
+        }
         
         @media print {
             .tabs { display: none; }
@@ -276,13 +388,47 @@
     </style>
 </head>
 <body>
+    <!-- LOGIN -->
+    <div id="login" style="
+      max-width:400px;
+      margin:100px auto;
+      background:white;
+      padding:30px;
+      border-radius:15px;
+      box-shadow:0 20px 60px rgba(0,0,0,.3);
+      text-align:center;
+    ">
+      <h2>Entrar no CFI</h2>
+      <input id="email" type="email" placeholder="Email" style="width:100%;padding:12px;margin:10px 0">
+      <input id="senha" type="password" placeholder="Senha" style="width:100%;padding:12px;margin:10px 0">
+      <button onclick="login()" style="width:100%;padding:12px;margin-top:10px">Entrar</button>
+      <button onclick="register()" style="width:100%;padding:12px;margin-top:10px">
+        Criar conta
+      </button>
+    </div>
+
+    <!-- APP -->
+    <div id="app" style="display:none;">
     <div class="container">
         <div class="header">
             <h1>CFI — Controle Financeiro e Investimento</h1>
+            <button id="btnSair" onclick="logout()" style="
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                background: rgba(255,255,255,0.2);
+                color: white;
+                border: 2px solid white;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                display: none;
+            ">Sair</button>
             <div class="user-info">
                 <input type="text" id="userName" placeholder="Digite seu nome">
-                <input type="text" id="month" placeholder="Mês (ex: Janeiro)">
-                <input type="number" id="year" placeholder="Ano (ex: 2025)">
+                <input type="text" id="month" placeholder="Mês (ex: Janeiro)" oninput="trocarPeriodo()">
+                <input type="number" id="year" placeholder="Ano (ex: 2025)" oninput="trocarPeriodo()">
             </div>
         </div>
         
@@ -296,8 +442,10 @@
             <button class="tab" onclick="openTab(event, 'anual')">📅 Controle Anual</button>
         </div>
         
+        <!-- ABA 1: VISÃO GERAL -->
         <div id="visao-geral" class="tab-content active">
             <h2 style="margin-bottom: 20px;">Resumo do Mês</h2>
+            
             <div class="summary-cards">
                 <div class="card green">
                     <div class="card-label">Total de Entradas</div>
@@ -316,6 +464,7 @@
                     <div class="card-value" id="resultadoFinal">R$ 0,00</div>
                 </div>
             </div>
+            
             <div class="form-section">
                 <h3>Detalhamento dos Gastos</h3>
                 <div style="margin-top: 15px;">
@@ -333,19 +482,37 @@
                     </div>
                 </div>
             </div>
-            <div class="quote">"Controle não é sobre ganhar mais. É sobre gastar melhor e fazer o dinheiro trabalhar para você."</div>
+            
+            <div class="quote">
+                "Controle não é sobre ganhar mais. É sobre gastar melhor e fazer o dinheiro trabalhar para você."
+            </div>
         </div>
         
+        <!-- ABA 2: ENTRADAS -->
         <div id="entradas" class="tab-content">
             <div class="form-section">
                 <h3>Entradas do Mês</h3>
                 <p class="instruction">Digite aqui os valores que você recebe no mês</p>
+                
                 <div class="input-group">
-                    <div class="input-field"><label>Salário</label><input type="number" id="salario" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Renda Extra</label><input type="number" id="rendaExtra" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Ajuda de Terceiros</label><input type="number" id="ajudaTerceiros" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Outros Valores</label><input type="number" id="outrosValores" placeholder="R$ 0,00" oninput="calcular()"></div>
+                    <div class="input-field">
+                        <label>Salário</label>
+                        <input type="number" id="salario" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Renda Extra</label>
+                        <input type="number" id="rendaExtra" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Ajuda de Terceiros</label>
+                        <input type="number" id="ajudaTerceiros" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Outros Valores</label>
+                        <input type="number" id="outrosValores" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
                 </div>
+                
                 <div class="total-box green">
                     <div class="total-label">TOTAL DE ENTRADAS</div>
                     <div class="total-value" id="totalEntradasBox">R$ 0,00</div>
@@ -353,19 +520,43 @@
             </div>
         </div>
         
+        <!-- ABA 3: GASTOS FIXOS -->
         <div id="gastos-fixos" class="tab-content">
             <div class="form-section">
                 <h3>Gastos Fixos</h3>
                 <p class="instruction">Contas que se repetem todo mês</p>
+                
                 <div class="input-group">
-                    <div class="input-field"><label>Aluguel</label><input type="number" id="aluguel" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Água</label><input type="number" id="agua" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Luz</label><input type="number" id="luz" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Internet</label><input type="number" id="internet" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Telefone</label><input type="number" id="telefone" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Transporte Fixo</label><input type="number" id="transporte" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Outras Contas Fixas</label><input type="number" id="outrasFixas" placeholder="R$ 0,00" oninput="calcular()"></div>
+                    <div class="input-field">
+                        <label>Aluguel</label>
+                        <input type="number" id="aluguel" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Água</label>
+                        <input type="number" id="agua" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Luz</label>
+                        <input type="number" id="luz" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Internet</label>
+                        <input type="number" id="internet" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Telefone</label>
+                        <input type="number" id="telefone" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Transporte Fixo</label>
+                        <input type="number" id="transporte" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Outras Contas Fixas</label>
+                        <input type="number" id="outrasFixas" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
                 </div>
+                
                 <div class="total-box orange">
                     <div class="total-label">TOTAL DE GASTOS FIXOS</div>
                     <div class="total-value" id="totalFixosBox">R$ 0,00</div>
@@ -373,20 +564,47 @@
             </div>
         </div>
         
+        <!-- ABA 4: GASTOS VARIÁVEIS -->
         <div id="gastos-variaveis" class="tab-content">
             <div class="form-section">
                 <h3>Gastos Variáveis</h3>
                 <p class="instruction">Gastos que mudam todo mês</p>
+                
                 <div class="input-group">
-                    <div class="input-field"><label>Mercado</label><input type="number" id="mercado" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Alimentação Fora</label><input type="number" id="alimentacaoFora" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Delivery</label><input type="number" id="delivery" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Lazer</label><input type="number" id="lazer" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Roupas</label><input type="number" id="roupas" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Assinaturas</label><input type="number" id="assinaturas" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Suplementos</label><input type="number" id="suplementos" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Outros Gastos</label><input type="number" id="outrosVariaveis" placeholder="R$ 0,00" oninput="calcular()"></div>
+                    <div class="input-field">
+                        <label>Mercado</label>
+                        <input type="number" id="mercado" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Alimentação Fora</label>
+                        <input type="number" id="alimentacaoFora" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Delivery</label>
+                        <input type="number" id="delivery" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Lazer</label>
+                        <input type="number" id="lazer" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Roupas</label>
+                        <input type="number" id="roupas" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Assinaturas</label>
+                        <input type="number" id="assinaturas" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Suplementos</label>
+                        <input type="number" id="suplementos" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Outros Gastos</label>
+                        <input type="number" id="outrosVariaveis" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
                 </div>
+                
                 <div class="total-box orange">
                     <div class="total-label">TOTAL DE GASTOS VARIÁVEIS</div>
                     <div class="total-value" id="totalVariaveisBox">R$ 0,00</div>
@@ -394,51 +612,86 @@
             </div>
         </div>
         
+        <!-- ABA 5: GASTOS INVISÍVEIS -->
         <div id="gastos-invisiveis" class="tab-content">
-            <div class="alert-box danger"><strong>⚠️ Atenção!</strong> Esses pequenos gastos podem estar sabotando suas finanças sem você perceber.</div>
+            <div class="alert-box danger">
+                <strong>⚠️ Atenção!</strong> Esses pequenos gastos podem estar sabotando suas finanças sem você perceber.
+            </div>
+            
             <div class="form-section">
                 <h3>Gastos Invisíveis</h3>
+                
                 <div class="input-group">
-                    <div class="input-field"><label>Compras por Impulso</label><input type="number" id="impulso" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Parcelamentos Pequenos</label><input type="number" id="parcelamentos" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Taxas Bancárias</label><input type="number" id="taxas" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>"Só R$10" Repetidos</label><input type="number" id="pequenos" placeholder="R$ 0,00" oninput="calcular()"></div>
+                    <div class="input-field">
+                        <label>Compras por Impulso</label>
+                        <input type="number" id="impulso" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Parcelamentos Pequenos</label>
+                        <input type="number" id="parcelamentos" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Taxas Bancárias</label>
+                        <input type="number" id="taxas" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>"Só R$10" Repetidos</label>
+                        <input type="number" id="pequenos" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
                 </div>
+                
                 <div class="total-box red">
                     <div class="total-label">TOTAL DE GASTOS INVISÍVEIS</div>
                     <div class="total-value" id="totalInvisiveisBox">R$ 0,00</div>
                 </div>
+                
                 <div class="alert-box" id="impactoAnual" style="margin-top: 20px; display: none;">
                     <strong>💡 Impacto Anual:</strong> Em um ano, isso representa: <strong id="impactoValor">R$ 0,00</strong>
                 </div>
             </div>
         </div>
         
+        <!-- ABA 6: ECONOMIA -->
         <div id="economia" class="tab-content">
             <div class="form-section">
                 <h3>Reserva / Economia</h3>
+                
                 <div class="input-group">
-                    <div class="input-field"><label>Valor Economizado Este Mês</label><input type="number" id="valorEconomizado" placeholder="R$ 0,00" oninput="calcular()"></div>
-                    <div class="input-field"><label>Meta Mensal de Economia</label><input type="number" id="metaMensal" placeholder="R$ 0,00" oninput="calcular()"></div>
+                    <div class="input-field">
+                        <label>Valor Economizado Este Mês</label>
+                        <input type="number" id="valorEconomizado" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
+                    <div class="input-field">
+                        <label>Meta Mensal de Economia</label>
+                        <input type="number" id="metaMensal" placeholder="R$ 0,00" oninput="calcular()">
+                    </div>
                 </div>
+                
                 <div class="progress-container">
                     <div class="progress-label">
                         <span>Progresso da Meta</span>
                         <span id="progressoPorcentagem">0%</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill" style="width: 0%;"><span id="progressText"></span></div>
+                        <div class="progress-fill" id="progressFill" style="width: 0%;">
+                            <span id="progressText"></span>
+                        </div>
                     </div>
                 </div>
+                
                 <div class="alert-box info">
                     <strong>💰 Dica:</strong> Dinheiro guardado em conta segura que rende CDI
-                    <p style="margin-top: 10px; font-size: 14px;">Mantenha sua reserva em investimentos de baixo risco e alta liquidez, como Tesouro Selic ou CDB que rende pelo menos 100% do CDI.</p>
+                    <p style="margin-top: 10px; font-size: 14px;">
+                        Mantenha sua reserva em investimentos de baixo risco e alta liquidez, como Tesouro Selic ou CDB que rende pelo menos 100% do CDI.
+                    </p>
                 </div>
             </div>
         </div>
         
+        <!-- ABA 7: CONTROLE ANUAL -->
         <div id="anual" class="tab-content">
             <h2 style="margin-bottom: 20px;">Controle Anual</h2>
+            
             <table>
                 <thead>
                     <tr>
@@ -449,7 +702,8 @@
                         <th style="text-align: right;">Resultado</th>
                     </tr>
                 </thead>
-                <tbody id="tabelaAnual"></tbody>
+                <tbody id="tabelaAnual">
+                </tbody>
                 <tfoot>
                     <tr>
                         <td>TOTAL ANUAL</td>
@@ -462,11 +716,10 @@
             </table>
         </div>
     </div>
+    </div>
     
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script>
+        // Configuração do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBW6aHvIHMgpDTk7b_kBVwncmQKcetvh-4",
             authDomain: "cfi-aguiaacess.firebaseapp.com",
@@ -475,26 +728,200 @@
             messagingSenderId: "330279402203",
             appId: "1:330279402203:web:f80ffaa25bd5f1b544eafe"
         };
+        
+        // Inicializa Firebase
         firebase.initializeApp(firebaseConfig);
+        
+        // Serviços
         const auth = firebase.auth();
         const db = firebase.firestore();
         
-        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-        let dadosAnuais = Array(12).fill(null).map(() => ({ entradas: 0, gastos: 0, economia: 0, resultado: 0 }));
+        // Funções de autenticação
+        function login() {
+          auth.signInWithEmailAndPassword(
+            email.value,
+            senha.value
+          ).catch(e => alert(e.message));
+        }
+
+        function register() {
+          auth.createUserWithEmailAndPassword(
+            email.value,
+            senha.value
+          ).catch(e => alert(e.message));
+        }
+        
+        // NOVA FUNCIONALIDADE 1: LOGOUT
+        function logout() {
+          if (confirm('Deseja realmente sair?')) {
+            auth.signOut();
+          }
+        }
+        
+        // NOVA FUNCIONALIDADE 2: PERÍODO (MÊS/ANO)
+        function getPeriodoAtual() {
+          const mes = document.getElementById('month')?.value || '';
+          const ano = document.getElementById('year')?.value || '';
+          
+          if (!mes || !ano) return null;
+          
+          const mesesMap = {
+            'janeiro': '01', 'fevereiro': '02', 'março': '03', 'abril': '04',
+            'maio': '05', 'junho': '06', 'julho': '07', 'agosto': '08',
+            'setembro': '09', 'outubro': '10', 'novembro': '11', 'dezembro': '12'
+          };
+          
+          const mesNormalizado = mes.toLowerCase().trim();
+          const mesNumero = mesesMap[mesNormalizado] || mes;
+          
+          return `${ano}-${mesNumero}`;
+        }
+        
+        function salvarDadosPorPeriodo() {
+          const user = auth.currentUser;
+          if (!user) return;
+          
+          const periodo = getPeriodoAtual();
+          if (!periodo) return;
+
+          const dados = {};
+          document.querySelectorAll("#app input").forEach(i => {
+            if (
+              i.id &&
+              !["month", "year", "userName"].includes(i.id) &&
+              i.type !== "password" &&
+              i.type !== "email"
+            ) {
+              dados[i.id] = i.value;
+            }
+          });
+
+          db.collection("usuarios").doc(user.uid)
+            .collection("meses").doc(periodo).set(dados);
+        }
+        
+        function carregarDadosPorPeriodo() {
+          const user = auth.currentUser;
+          if (!user) return;
+          
+          const periodo = getPeriodoAtual();
+          if (!periodo) return;
+          
+          db.collection("usuarios").doc(user.uid)
+            .collection("meses").doc(periodo).get()
+            .then(doc => {
+              // Limpar todos os campos primeiro
+              document.querySelectorAll("#app input").forEach(i => {
+                if (
+                  i.id &&
+                  !["month", "year", "userName"].includes(i.id) &&
+                  i.type !== "password" &&
+                  i.type !== "email"
+                ) {
+                  i.value = '';
+                }
+              });
+              
+              // Carregar dados se existirem
+              if (doc.exists) {
+                const dados = doc.data();
+                Object.keys(dados).forEach(id => {
+                  const el = document.getElementById(id);
+                  if (
+                    el &&
+                    !["month", "year", "userName"].includes(id)
+                  ) {
+                    el.value = dados[id] || '';
+                  }
+                });
+              }
+              
+              calcular();
+            });
+        }
+        
+        let periodoTimeout;
+        function trocarPeriodo() {
+          clearTimeout(periodoTimeout);
+          periodoTimeout = setTimeout(() => {
+            carregarDadosPorPeriodo();
+          }, 500);
+        }
+
+        auth.onAuthStateChanged(user => {
+          if (!user) {
+            login.style.display = "block";
+            app.style.display = "none";
+            btnSair.style.display = "none";
+            return;
+          }
+
+          login.style.display = "none";
+          app.style.display = "block";
+          btnSair.style.display = "block";
+          
+          // Definir período padrão se vazio
+          if (!document.getElementById('month').value) {
+            const mesAtual = new Date().toLocaleString('pt-BR', { month: 'long' });
+            document.getElementById('month').value = mesAtual.charAt(0).toUpperCase() + mesAtual.slice(1);
+          }
+          if (!document.getElementById('year').value) {
+            document.getElementById('year').value = new Date().getFullYear();
+          }
+
+          // Carregar dados do período atual
+          carregarDadosPorPeriodo();
+        });
+
+        function salvarDados() {
+          // FUNCIONALIDADE 3: SEGURANÇA - Validação defensiva
+          const user = auth.currentUser;
+          if (!user) return;
+          
+          // CORREÇÃO: Removida dupla gravação - agora salva APENAS por período
+          salvarDadosPorPeriodo();
+        }
+        
+        // Resto do código JavaScript
+        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                       'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        
+        let dadosAnuais = Array(12).fill(null).map(() => ({
+            entradas: 0,
+            gastos: 0,
+            economia: 0,
+            resultado: 0
+        }));
         
         function formatCurrency(value) {
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value || 0);
         }
         
         function getInputValue(id) {
-            return parseFloat(document.getElementById(id)?.value) || 0;
+            const value = parseFloat(document.getElementById(id)?.value) || 0;
+            return value;
         }
         
         function calcular() {
-            const totalEntradas = getInputValue('salario') + getInputValue('rendaExtra') + getInputValue('ajudaTerceiros') + getInputValue('outrosValores');
-            const totalFixos = getInputValue('aluguel') + getInputValue('agua') + getInputValue('luz') + getInputValue('internet') + getInputValue('telefone') + getInputValue('transporte') + getInputValue('outrasFixas');
-            const totalVariaveis = getInputValue('mercado') + getInputValue('alimentacaoFora') + getInputValue('delivery') + getInputValue('lazer') + getInputValue('roupas') + getInputValue('assinaturas') + getInputValue('suplementos') + getInputValue('outrosVariaveis');
-            const totalInvisiveis = getInputValue('impulso') + getInputValue('parcelamentos') + getInputValue('taxas') + getInputValue('pequenos');
+            const totalEntradas = getInputValue('salario') + getInputValue('rendaExtra') + 
+                                 getInputValue('ajudaTerceiros') + getInputValue('outrosValores');
+            
+            const totalFixos = getInputValue('aluguel') + getInputValue('agua') + 
+                              getInputValue('luz') + getInputValue('internet') + 
+                              getInputValue('telefone') + getInputValue('transporte') + 
+                              getInputValue('outrasFixas');
+            
+            const totalVariaveis = getInputValue('mercado') + getInputValue('alimentacaoFora') + 
+                                  getInputValue('delivery') + getInputValue('lazer') + 
+                                  getInputValue('roupas') + getInputValue('assinaturas') + 
+                                  getInputValue('suplementos') + getInputValue('outrosVariaveis');
+            
+            const totalInvisiveis = getInputValue('impulso') + getInputValue('parcelamentos') + 
+                                   getInputValue('taxas') + getInputValue('pequenos');
+            
             const totalGastos = totalFixos + totalVariaveis + totalInvisiveis;
             const valorEconomizado = getInputValue('valorEconomizado');
             const metaMensal = getInputValue('metaMensal');
@@ -504,19 +931,25 @@
             document.getElementById('totalGastos').textContent = formatCurrency(totalGastos);
             document.getElementById('totalEconomizado').textContent = formatCurrency(valorEconomizado);
             document.getElementById('resultadoFinal').textContent = formatCurrency(resultado);
+            
             document.getElementById('totalEntradasBox').textContent = formatCurrency(totalEntradas);
             document.getElementById('totalFixosBox').textContent = formatCurrency(totalFixos);
             document.getElementById('totalVariaveisBox').textContent = formatCurrency(totalVariaveis);
             document.getElementById('totalInvisiveisBox').textContent = formatCurrency(totalInvisiveis);
+            
             document.getElementById('detailFixos').textContent = formatCurrency(totalFixos);
             document.getElementById('detailVariaveis').textContent = formatCurrency(totalVariaveis);
             document.getElementById('detailInvisiveis').textContent = formatCurrency(totalInvisiveis);
             
             const resultadoCard = document.getElementById('resultadoCard');
             resultadoCard.className = 'card';
-            if (resultado > 0) resultadoCard.classList.add('green');
-            else if (resultado < 0) resultadoCard.classList.add('red');
-            else resultadoCard.classList.add('orange');
+            if (resultado > 0) {
+                resultadoCard.classList.add('green');
+            } else if (resultado < 0) {
+                resultadoCard.classList.add('red');
+            } else {
+                resultadoCard.classList.add('orange');
+            }
             
             if (totalInvisiveis > 0) {
                 document.getElementById('impactoAnual').style.display = 'block';
@@ -527,17 +960,25 @@
             
             const progressoPorcentagem = metaMensal > 0 ? (valorEconomizado / metaMensal) * 100 : 0;
             const progressoLimitado = Math.min(progressoPorcentagem, 100);
+            
             document.getElementById('progressoPorcentagem').textContent = progressoLimitado.toFixed(0) + '%';
             document.getElementById('progressFill').style.width = progressoLimitado + '%';
             document.getElementById('progressText').textContent = progressoLimitado > 10 ? progressoLimitado.toFixed(0) + '%' : '';
+            
+            salvarDados();
         }
         
         function openTab(evt, tabName) {
             const tabContents = document.querySelectorAll('.tab-content');
             const tabs = document.querySelectorAll('.tab');
             
-            tabContents.forEach(content => content.classList.remove('active'));
-            tabs.forEach(tab => tab.classList.remove('active'));
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
             
             document.getElementById(tabName).classList.add('active');
             evt.currentTarget.classList.add('active');
@@ -546,10 +987,64 @@
         function inicializarTabelaAnual() {
             const tbody = document.getElementById('tabelaAnual');
             tbody.innerHTML = '';
+            
             meses.forEach((mes, index) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong>${mes}</strong></td>
-                    <td><input type="number" placeholder="0" oninput="calcularAnual(${index})"></td>
-                    <td><input type="number" placeholder="0" oninput="calcularAnual(${index})"></td>
-                    <td><input type="number" placeholder="0" oninput="calcularAnual(${index})"></t
+                    <td><input type="number" placeholder="0" oninput="calcularAnual(${index}, 'entradas')"></td>
+                    <td><input type="number" placeholder="0" oninput="calcularAnual(${index}, 'gastos')"></td>
+                    <td><input type="number" placeholder="0" oninput="calcularAnual(${index}, 'economia')"></td>
+                    <td style="text-align: right; font-weight: bold;" id="resultado-${index}">R$ 0,00</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        function calcularAnual(mesIndex, campo) {
+            const inputs = document.getElementById('tabelaAnual').querySelectorAll('tr')[mesIndex].querySelectorAll('input');
+            const entradas = parseFloat(inputs[0].value) || 0;
+            const gastos = parseFloat(inputs[1].value) || 0;
+            const economia = parseFloat(inputs[2].value) || 0;
+            const resultado = entradas - gastos;
+            
+            dadosAnuais[mesIndex] = { entradas, gastos, economia, resultado };
+            
+            document.getElementById(`resultado-${mesIndex}`).textContent = formatCurrency(resultado);
+            
+            const resultadoCell = document.getElementById(`resultado-${mesIndex}`);
+            if (resultado > 0) {
+                resultadoCell.style.color = '#28a745';
+            } else if (resultado < 0) {
+                resultadoCell.style.color = '#dc3545';
+            } else {
+                resultadoCell.style.color = '#6c757d';
+            }
+            
+            const totalEntradas = dadosAnuais.reduce((sum, mes) => sum + mes.entradas, 0);
+            const totalGastos = dadosAnuais.reduce((sum, mes) => sum + mes.gastos, 0);
+            const totalEconomia = dadosAnuais.reduce((sum, mes) => sum + mes.economia, 0);
+            const totalResultado = dadosAnuais.reduce((sum, mes) => sum + mes.resultado, 0);
+            
+            document.getElementById('totalAnualEntradas').textContent = formatCurrency(totalEntradas);
+            document.getElementById('totalAnualGastos').textContent = formatCurrency(totalGastos);
+            document.getElementById('totalAnualEconomia').textContent = formatCurrency(totalEconomia);
+            document.getElementById('totalAnualResultado').textContent = formatCurrency(totalResultado);
+            
+            const totalResultadoCell = document.getElementById('totalAnualResultado');
+            if (totalResultado > 0) {
+                totalResultadoCell.style.color = '#28a745';
+            } else if (totalResultado < 0) {
+                totalResultadoCell.style.color = '#dc3545';
+            } else {
+                totalResultadoCell.style.color = '#6c757d';
+            }
+        }
+        
+        window.onload = function() {
+            inicializarTabelaAnual();
+            calcular();
+        };
+    </script>
+</body>
+</html
