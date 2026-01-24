@@ -309,52 +309,61 @@ function salvarDados(){
 function carregarDados(){
     if(!currentUser)return;
     const periodo=getPeriodoAtual();
+    console.log("Carregando dados do período:", periodo);
     db.collection("usuarios").doc(currentUser.uid).collection("periodos").doc(periodo).get().then(doc=>{
         if(doc.exists){
+            console.log("Dados encontrados:", doc.data());
             const d=doc.data();
             if(d.entradas){
-                document.getElementById("salario").value=d.entradas.salario||0;
-                document.getElementById("rendaExtra").value=d.entradas.rendaExtra||0;
-                document.getElementById("ajudaTerceiros").value=d.entradas.ajudaTerceiros||0;
-                document.getElementById("outrosValores").value=d.entradas.outrosValores||0;
+                document.getElementById("salario").value=d.entradas.salario||"";
+                document.getElementById("rendaExtra").value=d.entradas.rendaExtra||"";
+                document.getElementById("ajudaTerceiros").value=d.entradas.ajudaTerceiros||"";
+                document.getElementById("outrosValores").value=d.entradas.outrosValores||"";
             }
             if(d.gastosFixos){
-                document.getElementById("aluguel").value=d.gastosFixos.aluguel||0;
-                document.getElementById("agua").value=d.gastosFixos.agua||0;
-                document.getElementById("luz").value=d.gastosFixos.luz||0;
-                document.getElementById("internet").value=d.gastosFixos.internet||0;
-                document.getElementById("telefone").value=d.gastosFixos.telefone||0;
-                document.getElementById("transporte").value=d.gastosFixos.transporte||0;
-                document.getElementById("outrasFixas").value=d.gastosFixos.outrasFixas||0;
+                document.getElementById("aluguel").value=d.gastosFixos.aluguel||"";
+                document.getElementById("agua").value=d.gastosFixos.agua||"";
+                document.getElementById("luz").value=d.gastosFixos.luz||"";
+                document.getElementById("internet").value=d.gastosFixos.internet||"";
+                document.getElementById("telefone").value=d.gastosFixos.telefone||"";
+                document.getElementById("transporte").value=d.gastosFixos.transporte||"";
+                document.getElementById("outrasFixas").value=d.gastosFixos.outrasFixas||"";
             }
             if(d.gastosVariaveis){
-                document.getElementById("mercado").value=d.gastosVariaveis.mercado||0;
-                document.getElementById("alimentacaoFora").value=d.gastosVariaveis.alimentacaoFora||0;
-                document.getElementById("delivery").value=d.gastosVariaveis.delivery||0;
-                document.getElementById("lazer").value=d.gastosVariaveis.lazer||0;
-                document.getElementById("roupas").value=d.gastosVariaveis.roupas||0;
-                document.getElementById("assinaturas").value=d.gastosVariaveis.assinaturas||0;
-                document.getElementById("suplementos").value=d.gastosVariaveis.suplementos||0;
-                document.getElementById("outrosVariaveis").value=d.gastosVariaveis.outrosVariaveis||0;
+                document.getElementById("mercado").value=d.gastosVariaveis.mercado||"";
+                document.getElementById("alimentacaoFora").value=d.gastosVariaveis.alimentacaoFora||"";
+                document.getElementById("delivery").value=d.gastosVariaveis.delivery||"";
+                document.getElementById("lazer").value=d.gastosVariaveis.lazer||"";
+                document.getElementById("roupas").value=d.gastosVariaveis.roupas||"";
+                document.getElementById("assinaturas").value=d.gastosVariaveis.assinaturas||"";
+                document.getElementById("suplementos").value=d.gastosVariaveis.suplementos||"";
+                document.getElementById("outrosVariaveis").value=d.gastosVariaveis.outrosVariaveis||"";
             }
             if(d.gastosInvisiveis){
-                document.getElementById("impulso").value=d.gastosInvisiveis.impulso||0;
-                document.getElementById("parcelamentos").value=d.gastosInvisiveis.parcelamentos||0;
-                document.getElementById("taxas").value=d.gastosInvisiveis.taxas||0;
-                document.getElementById("pequenos").value=d.gastosInvisiveis.pequenos||0;
+                document.getElementById("impulso").value=d.gastosInvisiveis.impulso||"";
+                document.getElementById("parcelamentos").value=d.gastosInvisiveis.parcelamentos||"";
+                document.getElementById("taxas").value=d.gastosInvisiveis.taxas||"";
+                document.getElementById("pequenos").value=d.gastosInvisiveis.pequenos||"";
             }
             if(d.economia){
-                document.getElementById("valorEconomizado").value=d.economia.valorEconomizado||0;
-                document.getElementById("metaMensal").value=d.economia.metaMensal||0;
+                document.getElementById("valorEconomizado").value=d.economia.valorEconomizado||"";
+                document.getElementById("metaMensal").value=d.economia.metaMensal||"";
             }
-            calcular();
+            setTimeout(()=>calcular(),100);
         } else {
-            calcular();
+            console.log("Nenhum dado encontrado para este período");
+            limparCampos();
+            setTimeout(()=>calcular(),100);
         }
     }).catch(e => {
         console.error("Erro ao carregar dados:", e);
-        calcular();
+        setTimeout(()=>calcular(),100);
     });
+}
+
+function limparCampos(){
+    const inputs=document.querySelectorAll('input[type="number"]');
+    inputs.forEach(input=>input.value="");
 }
 
 function trocarPeriodo(){
