@@ -677,7 +677,25 @@
         </div>
     </div>
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBW6aHvIHMgpDTk7b_kBVwncmQKcetvh-4",
+            authDomain: "cfi-aguiaacess.firebaseapp.com",
+            projectId: "cfi-aguiaacess",
+            storageBucket: "cfi-aguiaacess.firebasestorage.app",
+            messagingSenderId: "330279402203",
+            appId: "1:330279402203:web:f80ffaa25bd5f1b544eafe"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Variáveis globais
         const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
                        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
         
@@ -727,118 +745,4 @@
             document.getElementById('totalEconomizado').textContent = formatCurrency(valorEconomizado);
             document.getElementById('resultadoFinal').textContent = formatCurrency(resultado);
             
-            document.getElementById('totalEntradasBox').textContent = formatCurrency(totalEntradas);
-            document.getElementById('totalFixosBox').textContent = formatCurrency(totalFixos);
-            document.getElementById('totalVariaveisBox').textContent = formatCurrency(totalVariaveis);
-            document.getElementById('totalInvisiveisBox').textContent = formatCurrency(totalInvisiveis);
-            
-            document.getElementById('detailFixos').textContent = formatCurrency(totalFixos);
-            document.getElementById('detailVariaveis').textContent = formatCurrency(totalVariaveis);
-            document.getElementById('detailInvisiveis').textContent = formatCurrency(totalInvisiveis);
-            
-            const resultadoCard = document.getElementById('resultadoCard');
-            resultadoCard.className = 'card';
-            if (resultado > 0) {
-                resultadoCard.classList.add('green');
-            } else if (resultado < 0) {
-                resultadoCard.classList.add('red');
-            } else {
-                resultadoCard.classList.add('orange');
-            }
-            
-            if (totalInvisiveis > 0) {
-                document.getElementById('impactoAnual').style.display = 'block';
-                document.getElementById('impactoValor').textContent = formatCurrency(totalInvisiveis * 12);
-            } else {
-                document.getElementById('impactoAnual').style.display = 'none';
-            }
-            
-            const progressoPorcentagem = metaMensal > 0 ? (valorEconomizado / metaMensal) * 100 : 0;
-            const progressoLimitado = Math.min(progressoPorcentagem, 100);
-            
-            document.getElementById('progressoPorcentagem').textContent = progressoLimitado.toFixed(0) + '%';
-            document.getElementById('progressFill').style.width = progressoLimitado + '%';
-            document.getElementById('progressText').textContent = progressoLimitado > 10 ? progressoLimitado.toFixed(0) + '%' : '';
-        }
-        
-        function openTab(tabName) {
-            const tabContents = document.querySelectorAll('.tab-content');
-            const tabs = document.querySelectorAll('.tab');
-            
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.getElementById(tabName).classList.add('active');
-            
-            event.target.classList.add('active');
-        }
-        
-        function inicializarTabelaAnual() {
-            const tbody = document.getElementById('tabelaAnual');
-            tbody.innerHTML = '';
-            
-            meses.forEach((mes, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${mes}</strong></td>
-                    <td><input type="number" placeholder="0" oninput="calcularAnual(${index}, 'entradas')"></td>
-                    <td><input type="number" placeholder="0" oninput="calcularAnual(${index}, 'gastos')"></td>
-                    <td><input type="number" placeholder="0" oninput="calcularAnual(${index}, 'economia')"></td>
-                    <td style="text-align: right; font-weight: bold;" id="resultado-${index}">R$ 0,00</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-        
-        function calcularAnual(mesIndex, campo) {
-            const inputs = document.getElementById('tabelaAnual').querySelectorAll('tr')[mesIndex].querySelectorAll('input');
-            const entradas = parseFloat(inputs[0].value) || 0;
-            const gastos = parseFloat(inputs[1].value) || 0;
-            const economia = parseFloat(inputs[2].value) || 0;
-            const resultado = entradas - gastos;
-            
-            dadosAnuais[mesIndex] = { entradas, gastos, economia, resultado };
-            
-            document.getElementById(`resultado-${mesIndex}`).textContent = formatCurrency(resultado);
-            
-            const resultadoCell = document.getElementById(`resultado-${mesIndex}`);
-            if (resultado > 0) {
-                resultadoCell.style.color = '#28a745';
-            } else if (resultado < 0) {
-                resultadoCell.style.color = '#dc3545';
-            } else {
-                resultadoCell.style.color = '#6c757d';
-            }
-            
-            const totalEntradas = dadosAnuais.reduce((sum, mes) => sum + mes.entradas, 0);
-            const totalGastos = dadosAnuais.reduce((sum, mes) => sum + mes.gastos, 0);
-            const totalEconomia = dadosAnuais.reduce((sum, mes) => sum + mes.economia, 0);
-            const totalResultado = dadosAnuais.reduce((sum, mes) => sum + mes.resultado, 0);
-            
-            document.getElementById('totalAnualEntradas').textContent = formatCurrency(totalEntradas);
-            document.getElementById('totalAnualGastos').textContent = formatCurrency(totalGastos);
-            document.getElementById('totalAnualEconomia').textContent = formatCurrency(totalEconomia);
-            document.getElementById('totalAnualResultado').textContent = formatCurrency(totalResultado);
-            
-            const totalResultadoCell = document.getElementById('totalAnualResultado');
-            if (totalResultado > 0) {
-                totalResultadoCell.style.color = '#28a745';
-            } else if (totalResultado < 0) {
-                totalResultadoCell.style.color = '#dc3545';
-            } else {
-                totalResultadoCell.style.color = '#6c757d';
-            }
-        }
-        
-        window.onload = function() {
-            inicializarTabelaAnual();
-            calcular();
-        };
-    </script>
-</body>
-</html>
+            document.getElementById('totalEntradasBox').
