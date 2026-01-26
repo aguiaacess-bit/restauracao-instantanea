@@ -812,7 +812,9 @@
           });
 
           db.collection("usuarios").doc(user.uid)
-            .collection("meses").doc(periodo).set(dados);
+            .collection("periodos").doc(periodo).set(dados)
+            .then(() => console.log("✅ Salvo com sucesso!"))
+            .catch(e => console.error("❌ Erro ao salvar:", e));
         }
         
         window.carregarDadosPorPeriodo = function() {
@@ -823,7 +825,7 @@
           if (!periodo) return;
           
           db.collection("usuarios").doc(user.uid)
-            .collection("meses").doc(periodo).get()
+            .collection("periodos").doc(periodo).get()
             .then(doc => {
               // Limpar todos os campos primeiro
               document.querySelectorAll("#app input").forEach(i => {
@@ -839,6 +841,7 @@
               
               // Carregar dados se existirem
               if (doc.exists) {
+                console.log("✅ Dados carregados:", doc.data());
                 const dados = doc.data();
                 Object.keys(dados).forEach(id => {
                   const el = document.getElementById(id);
@@ -849,10 +852,13 @@
                     el.value = dados[id] || '';
                   }
                 });
+              } else {
+                console.log("⚠️ Nenhum dado encontrado para este período");
               }
               
               calcular();
-            });
+            })
+            .catch(e => console.error("❌ Erro ao carregar:", e));
         }
         
         let periodoTimeout;
