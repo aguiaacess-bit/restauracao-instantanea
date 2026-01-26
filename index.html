@@ -401,8 +401,8 @@
       <h2>Entrar no CFI</h2>
       <input id="email" type="email" placeholder="Email" style="width:100%;padding:12px;margin:10px 0">
       <input id="senha" type="password" placeholder="Senha" style="width:100%;padding:12px;margin:10px 0">
-      <button onclick="login()" style="width:100%;padding:12px;margin-top:10px">Entrar</button>
-      <button onclick="register()" style="width:100%;padding:12px;margin-top:10px">
+      <button onclick="fazerLogin()" style="width:100%;padding:12px;margin-top:10px">Entrar</button>
+      <button onclick="criarConta()" style="width:100%;padding:12px;margin-top:10px">
         Criar conta
       </button>
     </div>
@@ -412,7 +412,7 @@
     <div class="container">
         <div class="header">
             <h1>CFI — Controle Financeiro e Investimento</h1>
-            <button id="btnSair" onclick="logout()" style="
+            <button id="btnSair" onclick="sair()" style="
                 position: absolute;
                 top: 20px;
                 right: 20px;
@@ -719,6 +719,17 @@
     </div>
     
     <script>
+        // Aguardar Firebase carregar
+        window.addEventListener('load', function() {
+            if (typeof firebase === 'undefined') {
+                alert('Erro: Firebase não carregou. Verifique sua conexão.');
+                return;
+            }
+            
+            iniciarApp();
+        });
+        
+        function iniciarApp() {
         // Configuração do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBW6aHvIHMgpDTk7b_kBVwncmQKcetvh-4",
@@ -736,35 +747,34 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         
-        // Referências dos elementos do DOM
-        const login = document.getElementById("login");
-        const app = document.getElementById("app");
-        const btnSair = document.getElementById("btnSair");
-        
         // Funções de autenticação
-        function login() {
+        window.fazerLogin = function() {
+          const emailInput = document.getElementById('email');
+          const senhaInput = document.getElementById('senha');
           auth.signInWithEmailAndPassword(
-            email.value,
-            senha.value
+            emailInput.value,
+            senhaInput.value
           ).catch(e => alert(e.message));
         }
 
-        function register() {
+        window.criarConta = function() {
+          const emailInput = document.getElementById('email');
+          const senhaInput = document.getElementById('senha');
           auth.createUserWithEmailAndPassword(
-            email.value,
-            senha.value
+            emailInput.value,
+            senhaInput.value
           ).catch(e => alert(e.message));
         }
         
         // NOVA FUNCIONALIDADE 1: LOGOUT
-        function logout() {
+        window.sair = function() {
           if (confirm('Deseja realmente sair?')) {
             auth.signOut();
           }
         }
         
         // NOVA FUNCIONALIDADE 2: PERÍODO (MÊS/ANO)
-        function getPeriodoAtual() {
+        window.getPeriodoAtual = function() {
           const mes = document.getElementById('month')?.value || '';
           const ano = document.getElementById('year')?.value || '';
           
@@ -782,7 +792,7 @@
           return `${ano}-${mesNumero}`;
         }
         
-        function salvarDadosPorPeriodo() {
+        window.salvarDadosPorPeriodo = function() {
           const user = auth.currentUser;
           if (!user) return;
           
@@ -805,7 +815,7 @@
             .collection("meses").doc(periodo).set(dados);
         }
         
-        function carregarDadosPorPeriodo() {
+        window.carregarDadosPorPeriodo = function() {
           const user = auth.currentUser;
           if (!user) return;
           
@@ -846,7 +856,7 @@
         }
         
         let periodoTimeout;
-        function trocarPeriodo() {
+        window.trocarPeriodo = function() {
           clearTimeout(periodoTimeout);
           periodoTimeout = setTimeout(() => {
             carregarDadosPorPeriodo();
@@ -854,16 +864,20 @@
         }
 
         auth.onAuthStateChanged(user => {
+          const loginDiv = document.getElementById("login");
+          const appDiv = document.getElementById("app");
+          const btnSairDiv = document.getElementById("btnSair");
+          
           if (!user) {
-            login.style.display = "block";
-            app.style.display = "none";
-            btnSair.style.display = "none";
+            loginDiv.style.display = "block";
+            appDiv.style.display = "none";
+            btnSairDiv.style.display = "none";
             return;
           }
 
-          login.style.display = "none";
-          app.style.display = "block";
-          btnSair.style.display = "block";
+          loginDiv.style.display = "none";
+          appDiv.style.display = "block";
+          btnSairDiv.style.display = "block";
           
           // Definir período padrão se vazio
           if (!document.getElementById('month').value) {
@@ -878,7 +892,7 @@
           carregarDadosPorPeriodo();
         });
 
-        function salvarDados() {
+        window.salvarDados = function() {
           // FUNCIONALIDADE 3: SEGURANÇA - Validação defensiva
           const user = auth.currentUser;
           if (!user) return;
@@ -887,30 +901,19 @@
           salvarDadosPorPeriodo();
         }
         
-        // Resto do código JavaScript
-        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
-                       'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-        
-        let dadosAnuais = Array(12).fill(null).map(() => ({
-            entradas: 0,
-            gastos: 0,
-            economia: 0,
-            resultado: 0
-        }));
-        
-        function formatCurrency(value) {
+        window.formatCurrency = function(value) {
             return new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
                 currency: 'BRL'
             }).format(value || 0);
         }
         
-        function getInputValue(id) {
+        window.getInputValue = function(id) {
             const value = parseFloat(document.getElementById(id)?.value) || 0;
             return value;
         }
         
-        function calcular() {
+        window.calcular = function() {
             const totalEntradas = getInputValue('salario') + getInputValue('rendaExtra') + 
                                  getInputValue('ajudaTerceiros') + getInputValue('outrosValores');
             
@@ -973,7 +976,7 @@
             salvarDados();
         }
         
-        function openTab(evt, tabName) {
+        window.openTab = function(evt, tabName) {
             const tabContents = document.querySelectorAll('.tab-content');
             const tabs = document.querySelectorAll('.tab');
             
@@ -989,7 +992,9 @@
             evt.currentTarget.classList.add('active');
         }
         
-        function inicializarTabelaAnual() {
+        window.inicializarTabelaAnual = function() {
+            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                           'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
             const tbody = document.getElementById('tabelaAnual');
             tbody.innerHTML = '';
             
@@ -1006,7 +1011,14 @@
             });
         }
         
-        function calcularAnual(mesIndex, campo) {
+        let dadosAnuais = Array(12).fill(null).map(() => ({
+            entradas: 0,
+            gastos: 0,
+            economia: 0,
+            resultado: 0
+        }));
+        
+        window.calcularAnual = function(mesIndex, campo) {
             const inputs = document.getElementById('tabelaAnual').querySelectorAll('tr')[mesIndex].querySelectorAll('input');
             const entradas = parseFloat(inputs[0].value) || 0;
             const gastos = parseFloat(inputs[1].value) || 0;
@@ -1046,10 +1058,11 @@
             }
         }
         
-        window.onload = function() {
-            inicializarTabelaAnual();
-            calcular();
-        };
+        // Inicializar quando o app carregar
+        inicializarTabelaAnual();
+        calcular();
+        
+        } // Fim da função iniciarApp
     </script>
 </body>
 </html
