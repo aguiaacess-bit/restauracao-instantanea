@@ -15,6 +15,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- CHART.JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -577,6 +580,161 @@
             font-weight: 500;
         }
         
+        /* RANKING */
+        .ranking-card {
+            background: linear-gradient(135deg, #1F1F1F 0%, #000000 100%);
+            padding: 32px;
+            border-radius: 12px;
+            margin: 24px 0;
+            border: 2px solid;
+            text-align: center;
+        }
+        
+        .ranking-card.bronze {
+            border-color: #CD7F32;
+        }
+        
+        .ranking-card.prata {
+            border-color: #C0C0C0;
+        }
+        
+        .ranking-card.ouro {
+            border-color: #FFD700;
+        }
+        
+        .ranking-card.diamante {
+            border-color: #00D9FF;
+        }
+        
+        .ranking-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        
+        .ranking-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .ranking-subtitle {
+            font-size: 14px;
+            color: #6A6A6A;
+            margin-bottom: 16px;
+        }
+        
+        .ranking-value {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        
+        .ranking-card.bronze .ranking-value {
+            color: #CD7F32;
+        }
+        
+        .ranking-card.prata .ranking-value {
+            color: #C0C0C0;
+        }
+        
+        .ranking-card.ouro .ranking-value {
+            color: #FFD700;
+        }
+        
+        .ranking-card.diamante .ranking-value {
+            color: #00D9FF;
+        }
+        
+        /* LEMBRETES */
+        .lembrete-item {
+            background: #1F1F1F;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #1DB954;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .lembrete-item.vencendo {
+            border-left-color: #FFD700;
+        }
+        
+        .lembrete-item.vencido {
+            border-left-color: #E22134;
+        }
+        
+        .lembrete-info {
+            flex: 1;
+        }
+        
+        .lembrete-titulo {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .lembrete-data {
+            font-size: 14px;
+            color: #6A6A6A;
+        }
+        
+        /* GRÁFICOS */
+        .chart-container {
+            background: #000000;
+            padding: 32px;
+            border-radius: 8px;
+            margin: 24px 0;
+            border: 1px solid #2A2A2A;
+        }
+        
+        .chart-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .chart-btn {
+            padding: 10px 20px;
+            background: #1F1F1F;
+            border: 1px solid #2A2A2A;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        
+        .chart-btn.active {
+            background: #1DB954;
+            border-color: #1DB954;
+        }
+        
+        .chart-btn:hover {
+            background: #2A2A2A;
+        }
+        
+        .btn-download {
+            background: #1DB954;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .btn-download:hover {
+            background: #1AA34A;
+        }
+        
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -737,6 +895,8 @@
             <button class="tab" onclick="openTab(event, 'despesas-pessoais')">Despesas Pessoais</button>
             <button class="tab" onclick="openTab(event, 'analise')">Análise</button>
             <button class="tab" onclick="openTab(event, 'metas')">Metas</button>
+            <button class="tab" onclick="openTab(event, 'graficos')">Gráficos</button>
+            <button class="tab" onclick="openTab(event, 'lembretes')">Lembretes</button>
             <button class="tab" onclick="openTab(event, 'historico')">Histórico</button>
         </div>
         
@@ -761,6 +921,14 @@
                     <div class="card-label">KM Rodados Hoje</div>
                     <div class="card-value" id="totalEconomizado" style="color: #FFFFFF;">0 km</div>
                 </div>
+            </div>
+            
+            <div id="rankingDiario" class="ranking-card bronze">
+                <div class="ranking-icon">🏆</div>
+                <div class="ranking-title">RANKING DO DIA</div>
+                <div class="ranking-subtitle">Seu nível hoje</div>
+                <div class="ranking-value">BRONZE</div>
+                <div class="ranking-subtitle" style="margin-top: 12px;">Faturamento: R$ 0,00</div>
             </div>
             
             <div class="form-section">
@@ -987,7 +1155,58 @@
             </div>
         </div>
         
-        <!-- ABA 7: HISTÓRICO SEMANAL/ANUAL -->
+        <!-- ABA 7: GRÁFICOS -->
+        <div id="graficos" class="tab-content">
+            <h2 style="margin-bottom: 28px; color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Análise Gráfica</h2>
+            
+            <div class="chart-container">
+                <h3 style="margin-bottom: 20px;">Evolução Financeira</h3>
+                <div class="chart-controls">
+                    <button class="chart-btn active" onclick="trocarGrafico('mensal')">Mensal</button>
+                    <button class="chart-btn" onclick="trocarGrafico('anual')">Anual</button>
+                </div>
+                <canvas id="chartFinanceiro" style="max-height: 400px;"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3 style="margin-bottom: 20px;">Distribuição de Despesas</h3>
+                <canvas id="chartDespesas" style="max-height: 400px;"></canvas>
+            </div>
+        </div>
+        
+        <!-- ABA 8: LEMBRETES -->
+        <div id="lembretes" class="tab-content">
+            <h2 style="margin-bottom: 28px; color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Lembretes de Vencimentos</h2>
+            
+            <div class="form-section">
+                <h3>Cadastrar Vencimentos</h3>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label>Vencimento CNH</label>
+                        <input type="date" id="vencimentoCNH" oninput="salvarLembretes()">
+                    </div>
+                    <div class="input-field">
+                        <label>Vencimento IPVA</label>
+                        <input type="date" id="vencimentoIPVA" oninput="salvarLembretes()">
+                    </div>
+                    <div class="input-field">
+                        <label>Vencimento Documento</label>
+                        <input type="date" id="vencimentoDocumento" oninput="salvarLembretes()">
+                    </div>
+                    <div class="input-field">
+                        <label>Vencimento Prestação</label>
+                        <input type="date" id="vencimentoPrestacao" oninput="salvarLembretes()">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3>Próximos Vencimentos</h3>
+                <div id="listaLembretes"></div>
+            </div>
+        </div>
+        
+        <!-- ABA 9: HISTÓRICO SEMANAL/ANUAL -->
         <div id="historico" class="tab-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;">
                 <h2 style="color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin: 0;">Histórico Semanal e Anual</h2>
@@ -1024,6 +1243,9 @@
             </div>
             
             <h3 style="margin-bottom: 20px; color: white; font-size: 20px; font-weight: 700;">Resumo por Semana</h3>
+            <div style="margin-bottom: 16px;">
+                <button class="btn-download" onclick="gerarRelatorioSemanal()">📄 Baixar Relatório da Semana</button>
+            </div>
             <table id="tabelaSemanal">
                 <thead>
                     <tr>
@@ -1205,6 +1427,12 @@
           carregarDadosPorPeriodo();
           gerarTabelaSemanal();
           inicializarTabelaAnual();
+          carregarLembretes();
+          
+          // Inicializar gráficos quando abrir a aba
+          setTimeout(() => {
+            gerarGraficos();
+          }, 1000);
         });
 
         window.salvarDados = function() {
@@ -1281,7 +1509,34 @@
             document.getElementById('progressFill').style.width = progressoLimitado + '%';
             document.getElementById('progressText').textContent = progressoLimitado > 10 ? progressoLimitado.toFixed(0) + '%' : '';
             
+            // Atualizar ranking
+            atualizarRanking(totalEntradas);
+            
             salvarDados();
+        }
+        
+        window.atualizarRanking = function(faturamento) {
+            const rankingCard = document.getElementById('rankingDiario');
+            const rankingValue = rankingCard.querySelector('.ranking-value');
+            const rankingSubtitle = rankingCard.querySelectorAll('.ranking-subtitle')[1];
+            
+            let nivel = 'BRONZE';
+            let classe = 'bronze';
+            
+            if (faturamento >= 651) {
+                nivel = 'DIAMANTE';
+                classe = 'diamante';
+            } else if (faturamento >= 401) {
+                nivel = 'OURO';
+                classe = 'ouro';
+            } else if (faturamento >= 251) {
+                nivel = 'PRATA';
+                classe = 'prata';
+            }
+            
+            rankingCard.className = `ranking-card ${classe}`;
+            rankingValue.textContent = nivel;
+            rankingSubtitle.textContent = `Faturamento: ${formatCurrency(faturamento)}`;
         }
         
         window.openTab = function(evt, tabName) {
@@ -1558,6 +1813,462 @@
         
         inicializarTabelaAnual();
         calcular();
+        
+        // FUNÇÕES DE GRÁFICOS
+        let chartFinanceiro = null;
+        let chartDespesas = null;
+        let tipoGraficoAtual = 'mensal';
+        
+        window.trocarGrafico = function(tipo) {
+            tipoGraficoAtual = tipo;
+            document.querySelectorAll('.chart-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            gerarGraficos();
+        }
+        
+        window.gerarGraficos = async function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const ano = document.getElementById('anoSelecionado')?.value || new Date().getFullYear();
+            
+            if (tipoGraficoAtual === 'mensal') {
+                await gerarGraficoMensal(user, ano);
+            } else {
+                await gerarGraficoAnual(user, ano);
+            }
+            
+            await gerarGraficoDespesas(user, ano);
+        }
+        
+        window.gerarGraficoMensal = async function(user, ano) {
+            const mes = document.getElementById('mesSelecionado')?.value || String(new Date().getMonth() + 1).padStart(2, '0');
+            const diasNoMes = new Date(ano, parseInt(mes), 0).getDate();
+            
+            const labels = [];
+            const receitas = [];
+            const despesas = [];
+            
+            for (let dia = 1; dia <= diasNoMes; dia++) {
+                labels.push(dia);
+                const dataStr = `${ano}-${mes}-${String(dia).padStart(2, '0')}`;
+                
+                try {
+                    const doc = await db.collection("usuarios").doc(user.uid)
+                        .collection("periodos").doc(dataStr).get();
+                    
+                    if (doc.exists) {
+                        const dados = doc.data();
+                        const receita = (parseFloat(dados.salario) || 0) + (parseFloat(dados.rendaExtra) || 0) + 
+                                       (parseFloat(dados.ajudaTerceiros) || 0) + (parseFloat(dados.outrosValores) || 0);
+                        const despesa = (parseFloat(dados.aluguel) || 0) + (parseFloat(dados.agua) || 0) + 
+                                       (parseFloat(dados.luz) || 0) + (parseFloat(dados.internet) || 0) + 
+                                       (parseFloat(dados.telefone) || 0) + (parseFloat(dados.transporte) || 0) + 
+                                       (parseFloat(dados.outrasFixas) || 0) + (parseFloat(dados.mercado) || 0) + 
+                                       (parseFloat(dados.alimentacaoFora) || 0) + (parseFloat(dados.delivery) || 0) + 
+                                       (parseFloat(dados.lazer) || 0) + (parseFloat(dados.roupas) || 0) + 
+                                       (parseFloat(dados.assinaturas) || 0) + (parseFloat(dados.suplementos) || 0) + 
+                                       (parseFloat(dados.outrosVariaveis) || 0) + (parseFloat(dados.impulso) || 0) + 
+                                       (parseFloat(dados.parcelamentos) || 0) + (parseFloat(dados.taxas) || 0) + 
+                                       (parseFloat(dados.pequenos) || 0);
+                        
+                        receitas.push(receita);
+                        despesas.push(despesa);
+                    } else {
+                        receitas.push(0);
+                        despesas.push(0);
+                    }
+                } catch (e) {
+                    receitas.push(0);
+                    despesas.push(0);
+                }
+            }
+            
+            const ctx = document.getElementById('chartFinanceiro');
+            if (chartFinanceiro) chartFinanceiro.destroy();
+            
+            chartFinanceiro = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Receitas',
+                        data: receitas,
+                        borderColor: '#1DB954',
+                        backgroundColor: 'rgba(29, 185, 84, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Despesas',
+                        data: despesas,
+                        borderColor: '#E22134',
+                        backgroundColor: 'rgba(226, 33, 52, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#FFFFFF' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#6A6A6A' },
+                            grid: { color: '#2A2A2A' }
+                        },
+                        x: {
+                            ticks: { color: '#6A6A6A' },
+                            grid: { color: '#2A2A2A' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        window.gerarGraficoAnual = async function(user, ano) {
+            const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+            const receitas = [];
+            const despesas = [];
+            
+            for (let mesIndex = 0; mesIndex < 12; mesIndex++) {
+                const mesNum = String(mesIndex + 1).padStart(2, '0');
+                const inicioDia = `${ano}-${mesNum}-01`;
+                const fimDia = `${ano}-${mesNum}-31`;
+                
+                try {
+                    const snapshot = await db.collection("usuarios").doc(user.uid)
+                        .collection("periodos")
+                        .where(firebase.firestore.FieldPath.documentId(), '>=', inicioDia)
+                        .where(firebase.firestore.FieldPath.documentId(), '<=', fimDia)
+                        .get();
+                    
+                    let receitaMes = 0;
+                    let despesaMes = 0;
+                    
+                    snapshot.forEach(doc => {
+                        const dados = doc.data();
+                        receitaMes += (parseFloat(dados.salario) || 0) + (parseFloat(dados.rendaExtra) || 0) + 
+                                     (parseFloat(dados.ajudaTerceiros) || 0) + (parseFloat(dados.outrosValores) || 0);
+                        despesaMes += (parseFloat(dados.aluguel) || 0) + (parseFloat(dados.agua) || 0) + 
+                                     (parseFloat(dados.luz) || 0) + (parseFloat(dados.internet) || 0) + 
+                                     (parseFloat(dados.telefone) || 0) + (parseFloat(dados.transporte) || 0) + 
+                                     (parseFloat(dados.outrasFixas) || 0) + (parseFloat(dados.mercado) || 0) + 
+                                     (parseFloat(dados.alimentacaoFora) || 0) + (parseFloat(dados.delivery) || 0) + 
+                                     (parseFloat(dados.lazer) || 0) + (parseFloat(dados.roupas) || 0) + 
+                                     (parseFloat(dados.assinaturas) || 0) + (parseFloat(dados.suplementos) || 0) + 
+                                     (parseFloat(dados.outrosVariaveis) || 0) + (parseFloat(dados.impulso) || 0) + 
+                                     (parseFloat(dados.parcelamentos) || 0) + (parseFloat(dados.taxas) || 0) + 
+                                     (parseFloat(dados.pequenos) || 0);
+                    });
+                    
+                    receitas.push(receitaMes);
+                    despesas.push(despesaMes);
+                } catch (e) {
+                    receitas.push(0);
+                    despesas.push(0);
+                }
+            }
+            
+            const ctx = document.getElementById('chartFinanceiro');
+            if (chartFinanceiro) chartFinanceiro.destroy();
+            
+            chartFinanceiro = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: meses,
+                    datasets: [{
+                        label: 'Receitas',
+                        data: receitas,
+                        backgroundColor: '#1DB954'
+                    }, {
+                        label: 'Despesas',
+                        data: despesas,
+                        backgroundColor: '#E22134'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#FFFFFF' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#6A6A6A' },
+                            grid: { color: '#2A2A2A' }
+                        },
+                        x: {
+                            ticks: { color: '#6A6A6A' },
+                            grid: { color: '#2A2A2A' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        window.gerarGraficoDespesas = async function(user, ano) {
+            const mes = document.getElementById('mesSelecionado')?.value || String(new Date().getMonth() + 1).padStart(2, '0');
+            const inicioDia = `${ano}-${mes}-01`;
+            const fimDia = `${ano}-${mes}-31`;
+            
+            let totalCombustivel = 0;
+            let totalManutencao = 0;
+            let totalAlimentacao = 0;
+            let totalOutros = 0;
+            
+            try {
+                const snapshot = await db.collection("usuarios").doc(user.uid)
+                    .collection("periodos")
+                    .where(firebase.firestore.FieldPath.documentId(), '>=', inicioDia)
+                    .where(firebase.firestore.FieldPath.documentId(), '<=', fimDia)
+                    .get();
+                
+                snapshot.forEach(doc => {
+                    const dados = doc.data();
+                    totalCombustivel += parseFloat(dados.aluguel) || 0;
+                    totalManutencao += (parseFloat(dados.agua) || 0) + (parseFloat(dados.luz) || 0);
+                    totalAlimentacao += (parseFloat(dados.mercado) || 0) + (parseFloat(dados.alimentacaoFora) || 0);
+                    totalOutros += (parseFloat(dados.internet) || 0) + (parseFloat(dados.telefone) || 0) + 
+                                  (parseFloat(dados.transporte) || 0) + (parseFloat(dados.outrasFixas) || 0) + 
+                                  (parseFloat(dados.delivery) || 0) + (parseFloat(dados.lazer) || 0) + 
+                                  (parseFloat(dados.roupas) || 0) + (parseFloat(dados.assinaturas) || 0) + 
+                                  (parseFloat(dados.suplementos) || 0) + (parseFloat(dados.outrosVariaveis) || 0) + 
+                                  (parseFloat(dados.impulso) || 0) + (parseFloat(dados.parcelamentos) || 0) + 
+                                  (parseFloat(dados.taxas) || 0) + (parseFloat(dados.pequenos) || 0);
+                });
+            } catch (e) {
+                console.error("Erro ao gerar gráfico de despesas:", e);
+            }
+            
+            const ctx = document.getElementById('chartDespesas');
+            if (chartDespesas) chartDespesas.destroy();
+            
+            chartDespesas = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Combustível', 'Manutenção', 'Alimentação', 'Outros'],
+                    datasets: [{
+                        data: [totalCombustivel, totalManutencao, totalAlimentacao, totalOutros],
+                        backgroundColor: ['#1DB954', '#FFD700', '#0A84FF', '#E22134']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#FFFFFF' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // FUNÇÕES DE LEMBRETES
+        window.salvarLembretes = function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const lembretes = {
+                cnh: document.getElementById('vencimentoCNH').value,
+                ipva: document.getElementById('vencimentoIPVA').value,
+                documento: document.getElementById('vencimentoDocumento').value,
+                prestacao: document.getElementById('vencimentoPrestacao').value
+            };
+            
+            db.collection("usuarios").doc(user.uid).set({ lembretes }, { merge: true })
+                .then(() => {
+                    console.log("Lembretes salvos!");
+                    atualizarListaLembretes();
+                })
+                .catch(e => console.error("Erro ao salvar lembretes:", e));
+        }
+        
+        window.carregarLembretes = function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            db.collection("usuarios").doc(user.uid).get()
+                .then(doc => {
+                    if (doc.exists && doc.data().lembretes) {
+                        const lembretes = doc.data().lembretes;
+                        if (lembretes.cnh) document.getElementById('vencimentoCNH').value = lembretes.cnh;
+                        if (lembretes.ipva) document.getElementById('vencimentoIPVA').value = lembretes.ipva;
+                        if (lembretes.documento) document.getElementById('vencimentoDocumento').value = lembretes.documento;
+                        if (lembretes.prestacao) document.getElementById('vencimentoPrestacao').value = lembretes.prestacao;
+                        atualizarListaLembretes();
+                    }
+                })
+                .catch(e => console.error("Erro ao carregar lembretes:", e));
+        }
+        
+        window.atualizarListaLembretes = function() {
+            const lista = document.getElementById('listaLembretes');
+            const hoje = new Date();
+            const lembretes = [
+                { titulo: 'CNH', data: document.getElementById('vencimentoCNH').value },
+                { titulo: 'IPVA', data: document.getElementById('vencimentoIPVA').value },
+                { titulo: 'Documento', data: document.getElementById('vencimentoDocumento').value },
+                { titulo: 'Prestação do Carro', data: document.getElementById('vencimentoPrestacao').value }
+            ];
+            
+            lista.innerHTML = '';
+            
+            lembretes.forEach(lembrete => {
+                if (!lembrete.data) return;
+                
+                const dataVencimento = new Date(lembrete.data + 'T00:00:00');
+                const diasRestantes = Math.ceil((dataVencimento - hoje) / (1000 * 60 * 60 * 24));
+                
+                let classe = '';
+                let status = '';
+                
+                if (diasRestantes < 0) {
+                    classe = 'vencido';
+                    status = `Vencido há ${Math.abs(diasRestantes)} dias`;
+                } else if (diasRestantes <= 30) {
+                    classe = 'vencendo';
+                    status = `Vence em ${diasRestantes} dias`;
+                } else {
+                    status = `Vence em ${diasRestantes} dias`;
+                }
+                
+                const item = document.createElement('div');
+                item.className = `lembrete-item ${classe}`;
+                item.innerHTML = `
+                    <div class="lembrete-info">
+                        <div class="lembrete-titulo">${lembrete.titulo}</div>
+                        <div class="lembrete-data">${new Date(lembrete.data).toLocaleDateString('pt-BR')} - ${status}</div>
+                    </div>
+                `;
+                lista.appendChild(item);
+            });
+            
+            if (lista.children.length === 0) {
+                lista.innerHTML = '<p style="color: #6A6A6A; text-align: center; padding: 20px;">Nenhum lembrete cadastrado</p>';
+            }
+        }
+        
+        // FUNÇÃO DE GERAR RELATÓRIO SEMANAL
+        window.gerarRelatorioSemanal = async function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const mes = document.getElementById('mesSelecionado').value;
+            const ano = document.getElementById('anoSelecionado').value;
+            const inicioDia = `${ano}-${mes}-01`;
+            const fimDia = `${ano}-${mes}-31`;
+            
+            try {
+                const snapshot = await db.collection("usuarios").doc(user.uid)
+                    .collection("periodos")
+                    .where(firebase.firestore.FieldPath.documentId(), '>=', inicioDia)
+                    .where(firebase.firestore.FieldPath.documentId(), '<=', fimDia)
+                    .get();
+                
+                let relatorio = `RELATÓRIO SEMANAL - BLACK DRIVERS\n`;
+                relatorio += `Período: ${mes}/${ano}\n`;
+                relatorio += `Gerado em: ${new Date().toLocaleDateString('pt-BR')}\n`;
+                relatorio += `\n${'='.repeat(80)}\n\n`;
+                
+                const semanas = {};
+                const diasDetalhados = [];
+                
+                snapshot.forEach(doc => {
+                    const data = new Date(doc.id + 'T00:00:00');
+                    const diaMes = data.getDate();
+                    const numSemana = Math.ceil(diaMes / 7);
+                    
+                    const dados = doc.data();
+                    const receita = (parseFloat(dados.salario) || 0) + (parseFloat(dados.rendaExtra) || 0) + 
+                                   (parseFloat(dados.ajudaTerceiros) || 0) + (parseFloat(dados.outrosValores) || 0);
+                    const despesa = (parseFloat(dados.aluguel) || 0) + (parseFloat(dados.agua) || 0) + 
+                                   (parseFloat(dados.luz) || 0) + (parseFloat(dados.internet) || 0) + 
+                                   (parseFloat(dados.telefone) || 0) + (parseFloat(dados.transporte) || 0) + 
+                                   (parseFloat(dados.outrasFixas) || 0) + (parseFloat(dados.mercado) || 0) + 
+                                   (parseFloat(dados.alimentacaoFora) || 0) + (parseFloat(dados.delivery) || 0) + 
+                                   (parseFloat(dados.lazer) || 0) + (parseFloat(dados.roupas) || 0) + 
+                                   (parseFloat(dados.assinaturas) || 0) + (parseFloat(dados.suplementos) || 0) + 
+                                   (parseFloat(dados.outrosVariaveis) || 0) + (parseFloat(dados.impulso) || 0) + 
+                                   (parseFloat(dados.parcelamentos) || 0) + (parseFloat(dados.taxas) || 0) + 
+                                   (parseFloat(dados.pequenos) || 0);
+                    
+                    if (!semanas[numSemana]) {
+                        semanas[numSemana] = [];
+                    }
+                    
+                    semanas[numSemana].push({
+                        data: doc.id,
+                        receita,
+                        despesa,
+                        lucro: receita - despesa,
+                        dados
+                    });
+                });
+                
+                Object.keys(semanas).sort().forEach(numSemana => {
+                    relatorio += `SEMANA ${numSemana}\n`;
+                    relatorio += `${'-'.repeat(80)}\n\n`;
+                    
+                    semanas[numSemana].forEach(dia => {
+                        relatorio += `Data: ${new Date(dia.data).toLocaleDateString('pt-BR')}\n`;
+                        relatorio += `\nRECEITAS:\n`;
+                        relatorio += `  Uber: ${formatCurrency(parseFloat(dia.dados.salario) || 0)}\n`;
+                        relatorio += `  99/DiDi/Outros: ${formatCurrency(parseFloat(dia.dados.rendaExtra) || 0)}\n`;
+                        relatorio += `  Gorjetas: ${formatCurrency(parseFloat(dia.dados.ajudaTerceiros) || 0)}\n`;
+                        relatorio += `  Bônus: ${formatCurrency(parseFloat(dia.dados.outrosValores) || 0)}\n`;
+                        relatorio += `  TOTAL RECEITAS: ${formatCurrency(dia.receita)}\n\n`;
+                        
+                        relatorio += `DESPESAS OPERACIONAIS:\n`;
+                        relatorio += `  Combustível: ${formatCurrency(parseFloat(dia.dados.aluguel) || 0)}\n`;
+                        relatorio += `  Manutenção: ${formatCurrency(parseFloat(dia.dados.agua) || 0)}\n`;
+                        relatorio += `  Lavagem: ${formatCurrency(parseFloat(dia.dados.luz) || 0)}\n`;
+                        relatorio += `  Seguro: ${formatCurrency(parseFloat(dia.dados.internet) || 0)}\n`;
+                        relatorio += `  IPVA/Licenciamento: ${formatCurrency(parseFloat(dia.dados.telefone) || 0)}\n`;
+                        relatorio += `  Pedágios: ${formatCurrency(parseFloat(dia.dados.transporte) || 0)}\n`;
+                        relatorio += `  Estacionamentos: ${formatCurrency(parseFloat(dia.dados.outrasFixas) || 0)}\n\n`;
+                        
+                        relatorio += `DESPESAS PESSOAIS:\n`;
+                        relatorio += `  Alimentação: ${formatCurrency(parseFloat(dia.dados.mercado) || 0)}\n`;
+                        relatorio += `  Água/Bebidas: ${formatCurrency(parseFloat(dia.dados.alimentacaoFora) || 0)}\n`;
+                        relatorio += `  Internet/Dados: ${formatCurrency(parseFloat(dia.dados.delivery) || 0)}\n`;
+                        relatorio += `  Outros: ${formatCurrency((parseFloat(dia.dados.lazer) || 0) + (parseFloat(dia.dados.roupas) || 0) + (parseFloat(dia.dados.assinaturas) || 0))}\n\n`;
+                        
+                        relatorio += `  TOTAL DESPESAS: ${formatCurrency(dia.despesa)}\n`;
+                        relatorio += `  LUCRO DO DIA: ${formatCurrency(dia.lucro)}\n`;
+                        relatorio += `\n${'·'.repeat(80)}\n\n`;
+                    });
+                    
+                    const totalSemanaReceita = semanas[numSemana].reduce((sum, d) => sum + d.receita, 0);
+                    const totalSemanaDespesa = semanas[numSemana].reduce((sum, d) => sum + d.despesa, 0);
+                    const totalSemanaLucro = semanas[numSemana].reduce((sum, d) => sum + d.lucro, 0);
+                    
+                    relatorio += `TOTAIS DA SEMANA ${numSemana}:\n`;
+                    relatorio += `  Receitas: ${formatCurrency(totalSemanaReceita)}\n`;
+                    relatorio += `  Despesas: ${formatCurrency(totalSemanaDespesa)}\n`;
+                    relatorio += `  Lucro: ${formatCurrency(totalSemanaLucro)}\n`;
+                    relatorio += `\n${'='.repeat(80)}\n\n`;
+                });
+                
+                const blob = new Blob([relatorio], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `relatorio-semanal-${mes}-${ano}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                alert('Relatório gerado com sucesso!');
+                
+            } catch (e) {
+                console.error("Erro ao gerar relatório:", e);
+                alert('Erro ao gerar relatório. Verifique o console.');
+            }
+        }
         
         }
     </script>
