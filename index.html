@@ -735,6 +735,206 @@
             background: #1AA34A;
         }
         
+        /* META INTELIGENTE */
+        .meta-card {
+            background: linear-gradient(135deg, #1DB954 0%, #148a3d 100%);
+            padding: 32px;
+            border-radius: 12px;
+            margin: 24px 0;
+            text-align: center;
+            color: white;
+        }
+        
+        .meta-resultado {
+            font-size: 48px;
+            font-weight: 800;
+            margin: 16px 0;
+        }
+        
+        .meta-detalhes {
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .meta-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* PONTO */
+        .ponto-card {
+            background: #000000;
+            padding: 32px;
+            border-radius: 12px;
+            border: 1px solid #2A2A2A;
+            margin: 24px 0;
+            text-align: center;
+        }
+        
+        .ponto-relogio {
+            font-size: 64px;
+            margin: 20px 0;
+            font-weight: 700;
+            color: #1DB954;
+        }
+        
+        .ponto-btn {
+            padding: 16px 48px;
+            background: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            margin: 10px;
+            transition: all 0.2s;
+        }
+        
+        .ponto-btn:hover {
+            background: #1AA34A;
+            transform: scale(1.05);
+        }
+        
+        .ponto-btn.fim {
+            background: #E22134;
+        }
+        
+        .ponto-btn.fim:hover {
+            background: #c21d2d;
+        }
+        
+        .ponto-historico {
+            margin-top: 32px;
+        }
+        
+        .ponto-item {
+            background: #1F1F1F;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* PARCERIAS */
+        .parceria-card {
+            background: #000000;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #2A2A2A;
+            margin: 16px 0;
+        }
+        
+        .parceria-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .parceria-nome {
+            font-size: 20px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 4px;
+        }
+        
+        .parceria-servico {
+            color: #6A6A6A;
+            font-size: 14px;
+        }
+        
+        .parceria-desconto {
+            background: #1DB954;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .parceria-info {
+            margin: 12px 0;
+            color: #FFFFFF;
+            line-height: 1.6;
+        }
+        
+        .parceria-cupom {
+            background: #1F1F1F;
+            padding: 12px;
+            border-radius: 6px;
+            border: 2px dashed #1DB954;
+            text-align: center;
+            margin: 16px 0;
+        }
+        
+        .cupom-codigo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1DB954;
+            letter-spacing: 2px;
+        }
+        
+        .parceria-avaliacoes {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            align-items: center;
+        }
+        
+        .btn-avaliacao {
+            padding: 10px 20px;
+            border: 2px solid #2A2A2A;
+            background: #1F1F1F;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.2s;
+        }
+        
+        .btn-avaliacao:hover {
+            transform: scale(1.1);
+        }
+        
+        .btn-avaliacao.positivo {
+            border-color: #1DB954;
+        }
+        
+        .btn-avaliacao.negativo {
+            border-color: #E22134;
+        }
+        
+        .avaliacoes-count {
+            color: #6A6A6A;
+            font-size: 14px;
+        }
+        
+        .filtro-estado {
+            margin-bottom: 24px;
+        }
+        
+        .filtro-estado select {
+            width: 100%;
+            padding: 14px 16px;
+            background: #1F1F1F;
+            border: 1px solid #2A2A2A;
+            color: white;
+            border-radius: 6px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+        }
+        
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -894,8 +1094,11 @@
             <button class="tab" onclick="openTab(event, 'despesas-veiculo')">Despesas Operacionais</button>
             <button class="tab" onclick="openTab(event, 'despesas-pessoais')">Despesas Pessoais</button>
             <button class="tab" onclick="openTab(event, 'analise')">Análise</button>
+            <button class="tab" onclick="openTab(event, 'meta-inteligente')">Meta Inteligente</button>
+            <button class="tab" onclick="openTab(event, 'ponto')">Ponto</button>
             <button class="tab" onclick="openTab(event, 'metas')">Metas</button>
             <button class="tab" onclick="openTab(event, 'graficos')">Gráficos</button>
+            <button class="tab" onclick="openTab(event, 'parcerias')">Parcerias</button>
             <button class="tab" onclick="openTab(event, 'lembretes')">Lembretes</button>
             <button class="tab" onclick="openTab(event, 'historico')">Histórico</button>
         </div>
@@ -1121,7 +1324,80 @@
             </div>
         </div>
         
-        <!-- ABA 6: METAS -->
+        <!-- ABA 6: META INTELIGENTE -->
+        <div id="meta-inteligente" class="tab-content">
+            <h2 style="margin-bottom: 28px; color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Meta Inteligente Diária</h2>
+            
+            <div class="form-section">
+                <h3>Defina seu Lucro Desejado</h3>
+                <p class="instruction">Informe quanto você quer lucrar hoje e veja automaticamente quanto precisa faturar</p>
+                
+                <div class="input-group">
+                    <div class="input-field">
+                        <label>Lucro Líquido Desejado Hoje</label>
+                        <input type="number" id="lucroDesejado" placeholder="Ex: 120,00" oninput="calcularMetaInteligente()">
+                    </div>
+                </div>
+            </div>
+            
+            <div id="metaResultado" style="display: none;">
+                <div class="meta-card">
+                    <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">PARA LUCRAR</div>
+                    <div class="meta-resultado" id="metaLucroDisplay">R$ 0,00</div>
+                    <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">VOCÊ PRECISA FATURAR</div>
+                    <div class="meta-resultado" id="metaFaturamentoNecessario">R$ 0,00</div>
+                    
+                    <div class="meta-detalhes">
+                        <div class="meta-item">
+                            <span>💰 Meta Diária de Faturamento:</span>
+                            <strong id="metaDiariaDisplay">R$ 0,00</strong>
+                        </div>
+                        <div class="meta-item">
+                            <span>⛽ Combustível Médio Gasto:</span>
+                            <strong id="metaCombustivelMedio">R$ 0,00</strong>
+                        </div>
+                        <div class="meta-item">
+                            <span>💳 Despesas Médias Diárias:</span>
+                            <strong id="metaDespesasMedias">R$ 0,00</strong>
+                        </div>
+                        <div class="meta-item">
+                            <span>📊 Baseado em:</span>
+                            <strong id="metaDiasBase">0 dias anteriores</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ABA 7: PONTO -->
+        <div id="ponto" class="tab-content">
+            <h2 style="margin-bottom: 28px; color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Controle de Ponto</h2>
+            
+            <div class="ponto-card">
+                <div style="font-size: 18px; color: #6A6A6A; margin-bottom: 8px;">HORÁRIO ATUAL</div>
+                <div class="ponto-relogio" id="relogioAtual">00:00:00</div>
+                
+                <div style="margin: 32px 0;">
+                    <button class="ponto-btn" onclick="registrarPonto('inicio')">🟢 BATER ENTRADA</button>
+                    <button class="ponto-btn fim" onclick="registrarPonto('fim')">🔴 BATER SAÍDA</button>
+                </div>
+                
+                <div id="pontoAtual" style="display: none; margin-top: 24px;">
+                    <div class="alert-box" style="border-left-color: #1DB954;">
+                        <strong>⏱️ Expediente em andamento</strong><br>
+                        Entrada: <span id="horarioEntrada">--:--</span><br>
+                        Tempo trabalhado: <span id="tempoTrabalhado">0h 0m</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section ponto-historico">
+                <h3>Histórico de Pontos Hoje</h3>
+                <div id="listaPontos"></div>
+            </div>
+        </div>
+        
+        <!-- ABA 8: METAS -->
         <div id="metas" class="tab-content">
             <div class="form-section">
                 <h3>Gestão de Economia</h3>
@@ -1172,6 +1448,47 @@
                 <h3 style="margin-bottom: 20px;">Distribuição de Despesas</h3>
                 <canvas id="chartDespesas" style="max-height: 400px;"></canvas>
             </div>
+        </div>
+        
+        <!-- ABA 10: PARCERIAS -->
+        <div id="parcerias" class="tab-content">
+            <h2 style="margin-bottom: 28px; color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Empresas Parceiras com Desconto</h2>
+            
+            <div class="form-section filtro-estado">
+                <h3>Filtrar por Estado</h3>
+                <select id="estadoFiltro" onchange="filtrarParcerias()">
+                    <option value="">Selecione seu estado</option>
+                    <option value="AC">Acre</option>
+                    <option value="AL">Alagoas</option>
+                    <option value="AP">Amapá</option>
+                    <option value="AM">Amazonas</option>
+                    <option value="BA">Bahia</option>
+                    <option value="CE">Ceará</option>
+                    <option value="DF">Distrito Federal</option>
+                    <option value="ES">Espírito Santo</option>
+                    <option value="GO">Goiás</option>
+                    <option value="MA">Maranhão</option>
+                    <option value="MT">Mato Grosso</option>
+                    <option value="MS">Mato Grosso do Sul</option>
+                    <option value="MG">Minas Gerais</option>
+                    <option value="PA">Pará</option>
+                    <option value="PB">Paraíba</option>
+                    <option value="PR">Paraná</option>
+                    <option value="PE">Pernambuco</option>
+                    <option value="PI">Piauí</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="RN">Rio Grande do Norte</option>
+                    <option value="RS">Rio Grande do Sul</option>
+                    <option value="RO">Rondônia</option>
+                    <option value="RR">Roraima</option>
+                    <option value="SC">Santa Catarina</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="SE">Sergipe</option>
+                    <option value="TO">Tocantins</option>
+                </select>
+            </div>
+            
+            <div id="listaParceiros"></div>
         </div>
         
         <!-- ABA 8: LEMBRETES -->
@@ -1395,6 +1712,7 @@
           clearTimeout(periodoTimeout);
           periodoTimeout = setTimeout(() => {
             carregarDadosPorPeriodo();
+            carregarPontos();
           }, 500);
         }
 
@@ -1428,6 +1746,7 @@
           gerarTabelaSemanal();
           inicializarTabelaAnual();
           carregarLembretes();
+          carregarPontos();
           
           // Inicializar gráficos quando abrir a aba
           setTimeout(() => {
@@ -2268,6 +2587,394 @@
                 console.error("Erro ao gerar relatório:", e);
                 alert('Erro ao gerar relatório. Verifique o console.');
             }
+        }
+        
+        // FUNÇÃO META INTELIGENTE
+        window.calcularMetaInteligente = async function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const lucroDesejado = parseFloat(document.getElementById('lucroDesejado').value) || 0;
+            
+            if (lucroDesejado === 0) {
+                document.getElementById('metaResultado').style.display = 'none';
+                return;
+            }
+            
+            // Buscar dados dos últimos 30 dias
+            const hoje = new Date();
+            const trintaDiasAtras = new Date(hoje);
+            trintaDiasAtras.setDate(hoje.getDate() - 30);
+            
+            const dataInicio = trintaDiasAtras.toISOString().split('T')[0];
+            const dataFim = hoje.toISOString().split('T')[0];
+            
+            try {
+                const snapshot = await db.collection("usuarios").doc(user.uid)
+                    .collection("periodos")
+                    .where(firebase.firestore.FieldPath.documentId(), '>=', dataInicio)
+                    .where(firebase.firestore.FieldPath.documentId(), '<=', dataFim)
+                    .get();
+                
+                let totalCombustivel = 0;
+                let totalDespesas = 0;
+                let diasContados = 0;
+                
+                snapshot.forEach(doc => {
+                    const dados = doc.data();
+                    totalCombustivel += parseFloat(dados.aluguel) || 0;
+                    totalDespesas += (parseFloat(dados.agua) || 0) + (parseFloat(dados.luz) || 0) + 
+                                    (parseFloat(dados.internet) || 0) + (parseFloat(dados.telefone) || 0) + 
+                                    (parseFloat(dados.transporte) || 0) + (parseFloat(dados.outrasFixas) || 0) +
+                                    (parseFloat(dados.mercado) || 0) + (parseFloat(dados.alimentacaoFora) || 0) + 
+                                    (parseFloat(dados.delivery) || 0) + (parseFloat(dados.lazer) || 0) + 
+                                    (parseFloat(dados.roupas) || 0) + (parseFloat(dados.assinaturas) || 0) + 
+                                    (parseFloat(dados.suplementos) || 0) + (parseFloat(dados.outrosVariaveis) || 0) +
+                                    (parseFloat(dados.impulso) || 0) + (parseFloat(dados.parcelamentos) || 0) + 
+                                    (parseFloat(dados.taxas) || 0) + (parseFloat(dados.pequenos) || 0);
+                    diasContados++;
+                });
+                
+                const combustivelMedio = diasContados > 0 ? totalCombustivel / diasContados : 0;
+                const despesasMedias = diasContados > 0 ? totalDespesas / diasContados : 0;
+                const despesasTotaisMedias = combustivelMedio + despesasMedias;
+                const faturamentoNecessario = lucroDesejado + despesasTotaisMedias;
+                
+                document.getElementById('metaLucroDisplay').textContent = formatCurrency(lucroDesejado);
+                document.getElementById('metaFaturamentoNecessario').textContent = formatCurrency(faturamentoNecessario);
+                document.getElementById('metaDiariaDisplay').textContent = formatCurrency(faturamentoNecessario);
+                document.getElementById('metaCombustivelMedio').textContent = formatCurrency(combustivelMedio);
+                document.getElementById('metaDespesasMedias').textContent = formatCurrency(despesasTotaisMedias);
+                document.getElementById('metaDiasBase').textContent = `${diasContados} dias anteriores`;
+                
+                document.getElementById('metaResultado').style.display = 'block';
+                
+            } catch (e) {
+                console.error("Erro ao calcular meta inteligente:", e);
+            }
+        }
+        
+        // FUNÇÕES DE PONTO
+        let intervaloPonto = null;
+        
+        window.atualizarRelogio = function() {
+            const agora = new Date();
+            const horas = String(agora.getHours()).padStart(2, '0');
+            const minutos = String(agora.getMinutes()).padStart(2, '0');
+            const segundos = String(agora.getSeconds()).padStart(2, '0');
+            document.getElementById('relogioAtual').textContent = `${horas}:${minutos}:${segundos}`;
+        }
+        
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio();
+        
+        window.registrarPonto = function(tipo) {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const dataAtual = document.getElementById('dataAtual').value;
+            if (!dataAtual) {
+                alert('Selecione uma data primeiro!');
+                return;
+            }
+            
+            const agora = new Date();
+            const horario = `${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+            
+            db.collection("usuarios").doc(user.uid)
+                .collection("periodos").doc(dataAtual).get()
+                .then(doc => {
+                    let pontos = [];
+                    if (doc.exists && doc.data().pontos) {
+                        pontos = doc.data().pontos;
+                    }
+                    
+                    pontos.push({
+                        tipo: tipo,
+                        horario: horario,
+                        timestamp: agora.getTime()
+                    });
+                    
+                    return db.collection("usuarios").doc(user.uid)
+                        .collection("periodos").doc(dataAtual)
+                        .set({ pontos: pontos }, { merge: true });
+                })
+                .then(() => {
+                    alert(`${tipo === 'inicio' ? 'Entrada' : 'Saída'} registrada com sucesso!`);
+                    carregarPontos();
+                })
+                .catch(e => console.error("Erro ao registrar ponto:", e));
+        }
+        
+        window.carregarPontos = function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const dataAtual = document.getElementById('dataAtual').value;
+            if (!dataAtual) return;
+            
+            db.collection("usuarios").doc(user.uid)
+                .collection("periodos").doc(dataAtual).get()
+                .then(doc => {
+                    const listaPontos = document.getElementById('listaPontos');
+                    listaPontos.innerHTML = '';
+                    
+                    if (doc.exists && doc.data().pontos) {
+                        const pontos = doc.data().pontos;
+                        
+                        // Verificar se há expediente em andamento
+                        const ultimoPonto = pontos[pontos.length - 1];
+                        if (ultimoPonto && ultimoPonto.tipo === 'inicio') {
+                            document.getElementById('pontoAtual').style.display = 'block';
+                            document.getElementById('horarioEntrada').textContent = ultimoPonto.horario;
+                            
+                            // Calcular tempo trabalhado
+                            if (intervaloPonto) clearInterval(intervaloPonto);
+                            intervaloPonto = setInterval(() => {
+                                const agora = new Date().getTime();
+                                const diff = agora - ultimoPonto.timestamp;
+                                const horas = Math.floor(diff / (1000 * 60 * 60));
+                                const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                                document.getElementById('tempoTrabalhado').textContent = `${horas}h ${minutos}m`;
+                            }, 1000);
+                        } else {
+                            document.getElementById('pontoAtual').style.display = 'none';
+                            if (intervaloPonto) clearInterval(intervaloPonto);
+                        }
+                        
+                        // Mostrar histórico
+                        pontos.forEach(ponto => {
+                            const item = document.createElement('div');
+                            item.className = 'ponto-item';
+                            item.innerHTML = `
+                                <div>
+                                    <strong>${ponto.tipo === 'inicio' ? '🟢 Entrada' : '🔴 Saída'}</strong>
+                                </div>
+                                <div>${ponto.horario}</div>
+                            `;
+                            listaPontos.appendChild(item);
+                        });
+                    } else {
+                        listaPontos.innerHTML = '<p style="color: #6A6A6A; text-align: center; padding: 20px;">Nenhum registro de ponto hoje</p>';
+                    }
+                })
+                .catch(e => console.error("Erro ao carregar pontos:", e));
+        }
+        
+        // FUNÇÕES DE PARCERIAS
+        const parceriasDB = [
+            {
+                id: '1',
+                nome: 'SOS Celulares',
+                servico: 'Assistência técnica de celular móvel',
+                endereco: 'Rua Águias 447, Alvorada',
+                estado: 'RS',
+                desconto: '5%',
+                codigo: '5CK1',
+                whatsapp: '51981687827',
+                avaliacoes: { positivas: 0, negativas: 0 }
+            }
+        ];
+        
+        window.filtrarParcerias = async function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const estadoSelecionado = document.getElementById('estadoFiltro').value;
+            const listaParceiros = document.getElementById('listaParceiros');
+            
+            if (!estadoSelecionado) {
+                listaParceiros.innerHTML = '<p style="color: #6A6A6A; text-align: center; padding: 20px;">Selecione um estado para ver as empresas parceiras</p>';
+                return;
+            }
+            
+            listaParceiros.innerHTML = '';
+            
+            // Buscar avaliações do Firebase
+            const avaliacoesSnapshot = await db.collection("avaliacoesParceiros").get();
+            const avaliacoes = {};
+            avaliacoesSnapshot.forEach(doc => {
+                avaliacoes[doc.id] = doc.data();
+            });
+            
+            const parceirosFiltrados = parceriasDB.filter(p => p.estado === estadoSelecionado);
+            
+            if (parceirosFiltrados.length === 0) {
+                listaParceiros.innerHTML = '<p style="color: #6A6A6A; text-align: center; padding: 20px;">Nenhuma empresa parceira neste estado ainda</p>';
+                return;
+            }
+            
+            for (const parceiro of parceirosFiltrados) {
+                const avaliacaoParceiro = avaliacoes[parceiro.id] || { positivas: 0, negativas: 0 };
+                
+                // Verificar se usuário já avaliou
+                const minhaAvaliacaoDoc = await db.collection("avaliacoesParceiros").doc(parceiro.id)
+                    .collection("usuarios").doc(user.uid).get();
+                const minhaAvaliacao = minhaAvaliacaoDoc.exists ? minhaAvaliacaoDoc.data().tipo : null;
+                
+                const card = document.createElement('div');
+                card.className = 'parceria-card';
+                card.innerHTML = `
+                    <div class="parceria-header">
+                        <div>
+                            <div class="parceria-nome">${parceiro.nome}</div>
+                            <div class="parceria-servico">${parceiro.servico}</div>
+                        </div>
+                        <div class="parceria-desconto">${parceiro.desconto}</div>
+                    </div>
+                    
+                    <div class="parceria-info">
+                        📍 ${parceiro.endereco}<br>
+                        📞 WhatsApp: ${parceiro.whatsapp}
+                    </div>
+                    
+                    <div class="parceria-cupom">
+                        <div style="color: #6A6A6A; font-size: 12px; margin-bottom: 4px;">CÓDIGO DE DESCONTO</div>
+                        <div class="cupom-codigo">${parceiro.codigo}</div>
+                    </div>
+                    
+                    <div class="parceria-avaliacoes">
+                        <button class="btn-avaliacao ${minhaAvaliacao === 'positiva' ? 'positivo' : ''}" 
+                                onclick="avaliarParceiro('${parceiro.id}', 'positiva')">
+                            ✓
+                        </button>
+                        <button class="btn-avaliacao ${minhaAvaliacao === 'negativa' ? 'negativo' : ''}" 
+                                onclick="avaliarParceiro('${parceiro.id}', 'negativa')">
+                            ✗
+                        </button>
+                        <div class="avaliacoes-count">
+                            ${avaliacaoParceiro.positivas || 0} 👍 | ${avaliacaoParceiro.negativas || 0} 👎
+                        </div>
+                    </div>
+                `;
+                listaParceiros.appendChild(card);
+            }
+        }
+        
+        window.avaliarParceiro = async function(parceiroId, tipo) {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            try {
+                // Verificar avaliação anterior
+                const minhaAvaliacaoDoc = await db.collection("avaliacoesParceiros").doc(parceiroId)
+                    .collection("usuarios").doc(user.uid).get();
+                
+                const avaliacaoAnterior = minhaAvaliacaoDoc.exists ? minhaAvaliacaoDoc.data().tipo : null;
+                
+                // Atualizar contadores
+                const parceiroRef = db.collection("avaliacoesParceiros").doc(parceiroId);
+                const parceiroDoc = await parceiroRef.get();
+                
+                let positivas = parceiroDoc.exists ? (parceiroDoc.data().positivas || 0) : 0;
+                let negativas = parceiroDoc.exists ? (parceiroDoc.data().negativas || 0) : 0;
+                
+                // Remover avaliação anterior
+                if (avaliacaoAnterior === 'positiva') positivas--;
+                if (avaliacaoAnterior === 'negativa') negativas--;
+                
+                // Adicionar nova avaliação
+                if (tipo === 'positiva') positivas++;
+                if (tipo === 'negativa') negativas++;
+                
+                // Salvar no Firebase
+                await parceiroRef.set({ positivas, negativas });
+                await db.collection("avaliacoesParceiros").doc(parceiroId)
+                    .collection("usuarios").doc(user.uid).set({ tipo });
+                
+                filtrarParcerias();
+                
+            } catch (e) {
+                console.error("Erro ao avaliar parceiro:", e);
+            }
+        }
+        
+        // CORRIGIR TABELA ANUAL - Evitar duplicação
+        window.inicializarTabelaAnual = async function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                           'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            const tbody = document.getElementById('tabelaAnual');
+            tbody.innerHTML = ''; // LIMPAR ANTES DE ADICIONAR
+            
+            const anoSelect = document.getElementById('anoSelecionado');
+            const ano = anoSelect ? anoSelect.value : new Date().getFullYear();
+            
+            let totalAnualReceita = 0;
+            let totalAnualDespesas = 0;
+            let totalAnualLucro = 0;
+            
+            for (let mesIndex = 0; mesIndex < 12; mesIndex++) {
+                const mesNum = String(mesIndex + 1).padStart(2, '0');
+                const inicioDia = `${ano}-${mesNum}-01`;
+                const fimDia = `${ano}-${mesNum}-31`;
+                
+                try {
+                    const snapshot = await db.collection("usuarios").doc(user.uid)
+                        .collection("periodos")
+                        .where(firebase.firestore.FieldPath.documentId(), '>=', inicioDia)
+                        .where(firebase.firestore.FieldPath.documentId(), '<=', fimDia)
+                        .get();
+                    
+                    let receitaMes = 0;
+                    let despesasMes = 0;
+                    
+                    snapshot.forEach(doc => {
+                        const dados = doc.data();
+                        receitaMes += (parseFloat(dados.salario) || 0) + 
+                                     (parseFloat(dados.rendaExtra) || 0) + 
+                                     (parseFloat(dados.ajudaTerceiros) || 0) + 
+                                     (parseFloat(dados.outrosValores) || 0);
+                        
+                        despesasMes += (parseFloat(dados.aluguel) || 0) + 
+                                      (parseFloat(dados.agua) || 0) + 
+                                      (parseFloat(dados.luz) || 0) + 
+                                      (parseFloat(dados.internet) || 0) + 
+                                      (parseFloat(dados.telefone) || 0) + 
+                                      (parseFloat(dados.transporte) || 0) + 
+                                      (parseFloat(dados.outrasFixas) || 0) +
+                                      (parseFloat(dados.mercado) || 0) + 
+                                      (parseFloat(dados.alimentacaoFora) || 0) + 
+                                      (parseFloat(dados.delivery) || 0) + 
+                                      (parseFloat(dados.lazer) || 0) + 
+                                      (parseFloat(dados.roupas) || 0) + 
+                                      (parseFloat(dados.assinaturas) || 0) + 
+                                      (parseFloat(dados.suplementos) || 0) + 
+                                      (parseFloat(dados.outrosVariaveis) || 0) +
+                                      (parseFloat(dados.impulso) || 0) + 
+                                      (parseFloat(dados.parcelamentos) || 0) + 
+                                      (parseFloat(dados.taxas) || 0) + 
+                                      (parseFloat(dados.pequenos) || 0);
+                    });
+                    
+                    const lucroMes = receitaMes - despesasMes;
+                    
+                    totalAnualReceita += receitaMes;
+                    totalAnualDespesas += despesasMes;
+                    totalAnualLucro += lucroMes;
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${meses[mesIndex]}</strong></td>
+                        <td style="text-align: right; color: #1DB954;">${formatCurrency(receitaMes)}</td>
+                        <td style="text-align: right; color: #E22134;">${formatCurrency(despesasMes)}</td>
+                        <td style="text-align: right; color: ${lucroMes >= 0 ? '#1DB954' : '#E22134'}; font-weight: bold;">${formatCurrency(lucroMes)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                    
+                } catch (e) {
+                    console.error(`Erro ao carregar dados de ${meses[mesIndex]}:`, e);
+                }
+            }
+            
+            document.getElementById('totalAnualEntradas').textContent = formatCurrency(totalAnualReceita);
+            document.getElementById('totalAnualGastos').textContent = formatCurrency(totalAnualDespesas);
+            document.getElementById('totalAnualResultado').textContent = formatCurrency(totalAnualLucro);
+            
+            const totalAnualCell = document.getElementById('totalAnualResultado');
+            totalAnualCell.style.color = totalAnualLucro >= 0 ? '#1DB954' : '#E22134';
         }
         
         }
