@@ -599,10 +599,12 @@
                 flex-direction: row;
                 width: 100%;
                 gap: 8px;
+                justify-content: center;
             }
             
             .periodo-info input {
-                width: 100%;
+                width: auto;
+                max-width: 200px;
                 font-size: 14px;
                 padding: 10px 14px;
             }
@@ -719,8 +721,7 @@
                     <span>BLACK DRIVERS</span>
                 </div>
                 <div class="periodo-info">
-                    <input type="text" id="month" placeholder="Mês" oninput="trocarPeriodo()">
-                    <input type="number" id="year" placeholder="Ano" oninput="trocarPeriodo()">
+                    <input type="date" id="dataAtual" oninput="trocarPeriodo()">
                 </div>
             </div>
             <div style="display: flex; gap: 16px; align-items: center;">
@@ -741,23 +742,23 @@
         
         <!-- ABA 1: DASHBOARD -->
         <div id="dashboard" class="tab-content active">
-            <h2 style="margin-bottom: 32px; color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Visão Geral do Mês</h2>
+            <h2 style="margin-bottom: 32px; color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Visão Geral do Dia</h2>
             
             <div class="summary-cards">
                 <div class="card green">
-                    <div class="card-label">Receita Bruta</div>
+                    <div class="card-label">Receita Bruta do Dia</div>
                     <div class="card-value" id="totalEntradas">R$ 0,00</div>
                 </div>
                 <div class="card red">
-                    <div class="card-label">Despesas Totais</div>
+                    <div class="card-label">Despesas do Dia</div>
                     <div class="card-value" id="totalGastos">R$ 0,00</div>
                 </div>
                 <div class="card green">
-                    <div class="card-label">Lucro Líquido</div>
+                    <div class="card-label">Lucro do Dia</div>
                     <div class="card-value" id="resultadoFinal">R$ 0,00</div>
                 </div>
                 <div class="card">
-                    <div class="card-label">KM Rodados</div>
+                    <div class="card-label">KM Rodados Hoje</div>
                     <div class="card-value" id="totalEconomizado" style="color: #FFFFFF;">0 km</div>
                 </div>
             </div>
@@ -788,8 +789,8 @@
         <!-- ABA 2: CORRIDAS -->
         <div id="corridas" class="tab-content">
             <div class="form-section">
-                <h3>Receitas Mensais</h3>
-                <p class="instruction">Registre todas as fontes de receita do período</p>
+                <h3>Receitas Diárias</h3>
+                <p class="instruction">Registre seus ganhos do dia</p>
                 
                 <div class="input-group">
                     <div class="input-field">
@@ -811,7 +812,7 @@
                 </div>
                 
                 <div class="total-box green">
-                    <div class="total-label">RECEITA BRUTA TOTAL</div>
+                    <div class="total-label">RECEITA BRUTA DO DIA</div>
                     <div class="total-value" id="totalEntradasBox">R$ 0,00</div>
                 </div>
             </div>
@@ -820,8 +821,8 @@
         <!-- ABA 3: DESPESAS VEÍCULO -->
         <div id="despesas-veiculo" class="tab-content">
             <div class="form-section">
-                <h3>Despesas Operacionais</h3>
-                <p class="instruction">Custos relacionados à operação do veículo</p>
+                <h3>Despesas Operacionais Diárias</h3>
+                <p class="instruction">Custos do dia relacionados à operação do veículo</p>
                 
                 <div class="input-group">
                     <div class="input-field">
@@ -859,7 +860,7 @@
                 </div>
                 
                 <div class="total-box red">
-                    <div class="total-label">TOTAL DESPESAS OPERACIONAIS</div>
+                    <div class="total-label">TOTAL DESPESAS OPERACIONAIS DO DIA</div>
                     <div class="total-value" id="totalFixosBox">R$ 0,00</div>
                 </div>
             </div>
@@ -868,8 +869,8 @@
         <!-- ABA 4: DESPESAS PESSOAIS -->
         <div id="despesas-pessoais" class="tab-content">
             <div class="form-section">
-                <h3>Despesas Pessoais</h3>
-                <p class="instruction">Custos pessoais durante o expediente</p>
+                <h3>Despesas Pessoais Diárias</h3>
+                <p class="instruction">Custos pessoais do dia durante o expediente</p>
                 
                 <div class="input-group">
                     <div class="input-field">
@@ -907,7 +908,7 @@
                 </div>
                 
                 <div class="total-box red">
-                    <div class="total-label">TOTAL DESPESAS PESSOAIS</div>
+                    <div class="total-label">TOTAL DESPESAS PESSOAIS DO DIA</div>
                     <div class="total-value" id="totalVariaveisBox">R$ 0,00</div>
                 </div>
             </div>
@@ -986,17 +987,66 @@
             </div>
         </div>
         
-        <!-- ABA 7: HISTÓRICO ANUAL -->
+        <!-- ABA 7: HISTÓRICO SEMANAL/ANUAL -->
         <div id="historico" class="tab-content">
-            <h2 style="margin-bottom: 28px; color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Histórico Anual</h2>
+            <h2 style="margin-bottom: 28px; color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Histórico Semanal e Anual</h2>
             
+            <div class="form-section">
+                <h3>Selecione o Mês para Visualizar</h3>
+                <div class="input-group" style="margin-bottom: 30px;">
+                    <div class="input-field">
+                        <label>Mês</label>
+                        <select id="mesSelecionado" onchange="gerarTabelaSemanal()" style="padding: 14px 16px; border: 1px solid #2A2A2A; background: #1F1F1F; color: white; border-radius: 6px; font-size: 16px; font-family: 'Inter', sans-serif; width: 100%;">
+                            <option value="01">Janeiro</option>
+                            <option value="02">Fevereiro</option>
+                            <option value="03">Março</option>
+                            <option value="04">Abril</option>
+                            <option value="05">Maio</option>
+                            <option value="06">Junho</option>
+                            <option value="07">Julho</option>
+                            <option value="08">Agosto</option>
+                            <option value="09">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+                    </div>
+                    <div class="input-field">
+                        <label>Ano</label>
+                        <input type="number" id="anoSelecionado" value="2026" onchange="gerarTabelaSemanal()" style="padding: 14px 16px; border: 1px solid #2A2A2A; background: #1F1F1F; color: white; border-radius: 6px; font-size: 16px; font-family: 'Inter', sans-serif;">
+                    </div>
+                </div>
+            </div>
+            
+            <h3 style="margin-bottom: 20px; color: white; font-size: 20px; font-weight: 700;">Resumo por Semana</h3>
+            <table id="tabelaSemanal">
+                <thead>
+                    <tr>
+                        <th>Semana</th>
+                        <th style="text-align: right;">Receita</th>
+                        <th style="text-align: right;">Despesas</th>
+                        <th style="text-align: right;">Lucro Líquido</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaSemanalBody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>TOTAL DO MÊS</td>
+                        <td style="text-align: right; color: #1DB954;" id="totalMensalReceita">R$ 0,00</td>
+                        <td style="text-align: right; color: #E22134;" id="totalMensalDespesas">R$ 0,00</td>
+                        <td style="text-align: right; color: #1DB954;" id="totalMensalLucro">R$ 0,00</td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            <h3 style="margin: 40px 0 20px 0; color: white; font-size: 20px; font-weight: 700;">Resumo Anual</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>Período</th>
+                        <th>Mês</th>
                         <th style="text-align: right;">Receita</th>
                         <th style="text-align: right;">Despesas</th>
-                        <th style="text-align: right;">Guardado</th>
                         <th style="text-align: right;">Lucro Líquido</th>
                     </tr>
                 </thead>
@@ -1007,7 +1057,6 @@
                         <td>TOTAL ANUAL</td>
                         <td style="text-align: right; color: #1DB954;" id="totalAnualEntradas">R$ 0,00</td>
                         <td style="text-align: right; color: #E22134;" id="totalAnualGastos">R$ 0,00</td>
-                        <td style="text-align: right; color: #FFFFFF;" id="totalAnualEconomia">R$ 0,00</td>
                         <td style="text-align: right; color: #1DB954;" id="totalAnualResultado">R$ 0,00</td>
                     </tr>
                 </tfoot>
@@ -1053,21 +1102,9 @@
         }
         
         window.getPeriodoAtual = function() {
-          const mes = document.getElementById('month')?.value || '';
-          const ano = document.getElementById('year')?.value || '';
-          
-          if (!mes || !ano) return null;
-          
-          const mesesMap = {
-            'janeiro': '01', 'fevereiro': '02', 'março': '03', 'abril': '04',
-            'maio': '05', 'junho': '06', 'julho': '07', 'agosto': '08',
-            'setembro': '09', 'outubro': '10', 'novembro': '11', 'dezembro': '12'
-          };
-          
-          const mesNormalizado = mes.toLowerCase().trim();
-          const mesNumero = mesesMap[mesNormalizado] || mes;
-          
-          return `${ano}-${mesNumero}`;
+          const dataInput = document.getElementById('dataAtual')?.value || '';
+          if (!dataInput) return null;
+          return dataInput; // Retorna no formato YYYY-MM-DD
         }
         
         window.salvarDadosPorPeriodo = function() {
@@ -1079,8 +1116,8 @@
 
           const dados = {};
           document.querySelectorAll("#app input").forEach(i => {
-            if (i.id && !["month", "year", "userName"].includes(i.id) && 
-                i.type !== "password" && i.type !== "email") {
+            if (i.id && !["dataAtual", "userName", "mesSelecionado", "anoSelecionado"].includes(i.id) && 
+                i.type !== "password" && i.type !== "email" && i.type !== "date") {
               dados[i.id] = i.value;
             }
           });
@@ -1102,8 +1139,8 @@
             .collection("periodos").doc(periodo).get()
             .then(doc => {
               document.querySelectorAll("#app input").forEach(i => {
-                if (i.id && !["month", "year", "userName"].includes(i.id) && 
-                    i.type !== "password" && i.type !== "email") {
+                if (i.id && !["dataAtual", "userName", "mesSelecionado", "anoSelecionado"].includes(i.id) && 
+                    i.type !== "password" && i.type !== "email" && i.type !== "date") {
                   i.value = '';
                 }
               });
@@ -1113,7 +1150,7 @@
                 const dados = doc.data();
                 Object.keys(dados).forEach(id => {
                   const el = document.getElementById(id);
-                  if (el && !["month", "year", "userName"].includes(id)) {
+                  if (el && !["dataAtual", "userName", "mesSelecionado", "anoSelecionado"].includes(id)) {
                     el.value = dados[id] || '';
                   }
                 });
@@ -1148,15 +1185,21 @@
           loginDiv.style.display = "none";
           appDiv.style.display = "block";
           
-          if (!document.getElementById('month').value) {
-            const mesAtual = new Date().toLocaleString('pt-BR', { month: 'long' });
-            document.getElementById('month').value = mesAtual.charAt(0).toUpperCase() + mesAtual.slice(1);
+          // Define data atual se não estiver definida
+          if (!document.getElementById('dataAtual').value) {
+            const hoje = new Date();
+            const dataFormatada = hoje.toISOString().split('T')[0];
+            document.getElementById('dataAtual').value = dataFormatada;
           }
-          if (!document.getElementById('year').value) {
-            document.getElementById('year').value = new Date().getFullYear();
-          }
+          
+          // Define mês e ano atuais para a tabela semanal
+          const hoje = new Date();
+          document.getElementById('mesSelecionado').value = String(hoje.getMonth() + 1).padStart(2, '0');
+          document.getElementById('anoSelecionado').value = hoje.getFullYear();
 
           carregarDadosPorPeriodo();
+          gerarTabelaSemanal();
+          inicializarTabelaAnual();
         });
 
         window.salvarDados = function() {
@@ -1241,23 +1284,186 @@
             evt.currentTarget.classList.add('active');
         }
         
-        window.inicializarTabelaAnual = function() {
+        window.gerarTabelaSemanal = async function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const mes = document.getElementById('mesSelecionado').value;
+            const ano = document.getElementById('anoSelecionado').value;
+            
+            const tbody = document.getElementById('tabelaSemanalBody');
+            tbody.innerHTML = '';
+            
+            // Obter todos os dias do mês do Firebase
+            const inicioDia = `${ano}-${mes}-01`;
+            const fimDia = `${ano}-${mes}-31`;
+            
+            try {
+                const snapshot = await db.collection("usuarios").doc(user.uid)
+                    .collection("periodos")
+                    .where(firebase.firestore.FieldPath.documentId(), '>=', inicioDia)
+                    .where(firebase.firestore.FieldPath.documentId(), '<=', fimDia)
+                    .get();
+                
+                // Agrupar por semana
+                const semanas = {};
+                snapshot.forEach(doc => {
+                    const data = new Date(doc.id);
+                    const diaMes = data.getDate();
+                    const numSemana = Math.ceil(diaMes / 7);
+                    
+                    if (!semanas[numSemana]) {
+                        semanas[numSemana] = { receita: 0, despesas: 0, lucro: 0 };
+                    }
+                    
+                    const dados = doc.data();
+                    const receita = (parseFloat(dados.salario) || 0) + 
+                                   (parseFloat(dados.rendaExtra) || 0) + 
+                                   (parseFloat(dados.ajudaTerceiros) || 0) + 
+                                   (parseFloat(dados.outrosValores) || 0);
+                    
+                    const despesas = (parseFloat(dados.aluguel) || 0) + 
+                                    (parseFloat(dados.agua) || 0) + 
+                                    (parseFloat(dados.luz) || 0) + 
+                                    (parseFloat(dados.internet) || 0) + 
+                                    (parseFloat(dados.telefone) || 0) + 
+                                    (parseFloat(dados.transporte) || 0) + 
+                                    (parseFloat(dados.outrasFixas) || 0) +
+                                    (parseFloat(dados.mercado) || 0) + 
+                                    (parseFloat(dados.alimentacaoFora) || 0) + 
+                                    (parseFloat(dados.delivery) || 0) + 
+                                    (parseFloat(dados.lazer) || 0) + 
+                                    (parseFloat(dados.roupas) || 0) + 
+                                    (parseFloat(dados.assinaturas) || 0) + 
+                                    (parseFloat(dados.suplementos) || 0) + 
+                                    (parseFloat(dados.outrosVariaveis) || 0) +
+                                    (parseFloat(dados.impulso) || 0) + 
+                                    (parseFloat(dados.parcelamentos) || 0) + 
+                                    (parseFloat(dados.taxas) || 0) + 
+                                    (parseFloat(dados.pequenos) || 0);
+                    
+                    semanas[numSemana].receita += receita;
+                    semanas[numSemana].despesas += despesas;
+                    semanas[numSemana].lucro += (receita - despesas);
+                });
+                
+                // Renderizar semanas
+                let totalMensalReceita = 0;
+                let totalMensalDespesas = 0;
+                let totalMensalLucro = 0;
+                
+                for (let i = 1; i <= 5; i++) {
+                    const semana = semanas[i] || { receita: 0, despesas: 0, lucro: 0 };
+                    totalMensalReceita += semana.receita;
+                    totalMensalDespesas += semana.despesas;
+                    totalMensalLucro += semana.lucro;
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>Semana ${i}</strong></td>
+                        <td style="text-align: right; color: #1DB954;">${formatCurrency(semana.receita)}</td>
+                        <td style="text-align: right; color: #E22134;">${formatCurrency(semana.despesas)}</td>
+                        <td style="text-align: right; color: ${semana.lucro >= 0 ? '#1DB954' : '#E22134'}; font-weight: bold;">${formatCurrency(semana.lucro)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+                
+                document.getElementById('totalMensalReceita').textContent = formatCurrency(totalMensalReceita);
+                document.getElementById('totalMensalDespesas').textContent = formatCurrency(totalMensalDespesas);
+                document.getElementById('totalMensalLucro').textContent = formatCurrency(totalMensalLucro);
+                
+                const totalLucroCell = document.getElementById('totalMensalLucro');
+                totalLucroCell.style.color = totalMensalLucro >= 0 ? '#1DB954' : '#E22134';
+                
+            } catch (e) {
+                console.error("Erro ao carregar dados semanais:", e);
+            }
+        }
+        
+        window.inicializarTabelaAnual = async function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
             const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
                            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
             const tbody = document.getElementById('tabelaAnual');
             tbody.innerHTML = '';
             
-            meses.forEach((mes, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${mes}</strong></td>
-                    <td><input type="number" placeholder="0" oninput="calcularAnual(${index})"></td>
-                    <td><input type="number" placeholder="0" oninput="calcularAnual(${index})"></td>
-                    <td><input type="number" placeholder="0" oninput="calcularAnual(${index})"></td>
-                    <td style="text-align: right; font-weight: bold;" id="resultado-${index}">R$ 0,00</td>
-                `;
-                tbody.appendChild(tr);
-            });
+            const ano = document.getElementById('anoSelecionado')?.value || new Date().getFullYear();
+            
+            let totalAnualReceita = 0;
+            let totalAnualDespesas = 0;
+            let totalAnualLucro = 0;
+            
+            for (let mesIndex = 0; mesIndex < 12; mesIndex++) {
+                const mesNum = String(mesIndex + 1).padStart(2, '0');
+                const inicioDia = `${ano}-${mesNum}-01`;
+                const fimDia = `${ano}-${mesNum}-31`;
+                
+                try {
+                    const snapshot = await db.collection("usuarios").doc(user.uid)
+                        .collection("periodos")
+                        .where(firebase.firestore.FieldPath.documentId(), '>=', inicioDia)
+                        .where(firebase.firestore.FieldPath.documentId(), '<=', fimDia)
+                        .get();
+                    
+                    let receitaMes = 0;
+                    let despesasMes = 0;
+                    
+                    snapshot.forEach(doc => {
+                        const dados = doc.data();
+                        receitaMes += (parseFloat(dados.salario) || 0) + 
+                                     (parseFloat(dados.rendaExtra) || 0) + 
+                                     (parseFloat(dados.ajudaTerceiros) || 0) + 
+                                     (parseFloat(dados.outrosValores) || 0);
+                        
+                        despesasMes += (parseFloat(dados.aluguel) || 0) + 
+                                      (parseFloat(dados.agua) || 0) + 
+                                      (parseFloat(dados.luz) || 0) + 
+                                      (parseFloat(dados.internet) || 0) + 
+                                      (parseFloat(dados.telefone) || 0) + 
+                                      (parseFloat(dados.transporte) || 0) + 
+                                      (parseFloat(dados.outrasFixas) || 0) +
+                                      (parseFloat(dados.mercado) || 0) + 
+                                      (parseFloat(dados.alimentacaoFora) || 0) + 
+                                      (parseFloat(dados.delivery) || 0) + 
+                                      (parseFloat(dados.lazer) || 0) + 
+                                      (parseFloat(dados.roupas) || 0) + 
+                                      (parseFloat(dados.assinaturas) || 0) + 
+                                      (parseFloat(dados.suplementos) || 0) + 
+                                      (parseFloat(dados.outrosVariaveis) || 0) +
+                                      (parseFloat(dados.impulso) || 0) + 
+                                      (parseFloat(dados.parcelamentos) || 0) + 
+                                      (parseFloat(dados.taxas) || 0) + 
+                                      (parseFloat(dados.pequenos) || 0);
+                    });
+                    
+                    const lucroMes = receitaMes - despesasMes;
+                    
+                    totalAnualReceita += receitaMes;
+                    totalAnualDespesas += despesasMes;
+                    totalAnualLucro += lucroMes;
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${meses[mesIndex]}</strong></td>
+                        <td style="text-align: right; color: #1DB954;">${formatCurrency(receitaMes)}</td>
+                        <td style="text-align: right; color: #E22134;">${formatCurrency(despesasMes)}</td>
+                        <td style="text-align: right; color: ${lucroMes >= 0 ? '#1DB954' : '#E22134'}; font-weight: bold;">${formatCurrency(lucroMes)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                    
+                } catch (e) {
+                    console.error(`Erro ao carregar dados de ${meses[mesIndex]}:`, e);
+                }
+            }
+            
+            document.getElementById('totalAnualEntradas').textContent = formatCurrency(totalAnualReceita);
+            document.getElementById('totalAnualGastos').textContent = formatCurrency(totalAnualDespesas);
+            document.getElementById('totalAnualResultado').textContent = formatCurrency(totalAnualLucro);
+            
+            const totalAnualCell = document.getElementById('totalAnualResultado');
+            totalAnualCell.style.color = totalAnualLucro >= 0 ? '#1DB954' : '#E22134';
         }
         
         let dadosAnuais = Array(12).fill(null).map(() => ({
