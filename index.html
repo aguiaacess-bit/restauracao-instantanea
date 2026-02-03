@@ -989,7 +989,12 @@
         
         <!-- ABA 7: HISTÓRICO SEMANAL/ANUAL -->
         <div id="historico" class="tab-content">
-            <h2 style="margin-bottom: 28px; color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Histórico Semanal e Anual</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;">
+                <h2 style="color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin: 0;">Histórico Semanal e Anual</h2>
+                <button onclick="atualizarHistorico()" style="padding: 12px 24px; background: #1DB954; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;">
+                    Atualizar Dados
+                </button>
+            </div>
             
             <div class="form-section">
                 <h3>Selecione o Mês para Visualizar</h3>
@@ -1206,6 +1211,12 @@
           const user = auth.currentUser;
           if (!user) return;
           salvarDadosPorPeriodo();
+          
+          // Atualizar tabelas de histórico após salvar
+          setTimeout(() => {
+            gerarTabelaSemanal();
+            inicializarTabelaAnual();
+          }, 500);
         }
         
         window.formatCurrency = function(value) {
@@ -1284,12 +1295,22 @@
             evt.currentTarget.classList.add('active');
         }
         
+        window.atualizarHistorico = function() {
+            gerarTabelaSemanal();
+            inicializarTabelaAnual();
+        }
+        
         window.gerarTabelaSemanal = async function() {
             const user = auth.currentUser;
-            if (!user) return;
+            if (!user) {
+                console.error("Usuário não autenticado");
+                return;
+            }
             
             const mes = document.getElementById('mesSelecionado').value;
             const ano = document.getElementById('anoSelecionado').value;
+            
+            console.log(`🔍 Buscando dados para ${mes}/${ano}`);
             
             const tbody = document.getElementById('tabelaSemanalBody');
             tbody.innerHTML = '';
@@ -1298,6 +1319,8 @@
             const inicioDia = `${ano}-${mes}-01`;
             const fimDia = `${ano}-${mes}-31`;
             
+            console.log(`📅 Período: ${inicioDia} até ${fimDia}`);
+            
             try {
                 const snapshot = await db.collection("usuarios").doc(user.uid)
                     .collection("periodos")
@@ -1305,10 +1328,13 @@
                     .where(firebase.firestore.FieldPath.documentId(), '<=', fimDia)
                     .get();
                 
+                console.log(`📊 Documentos encontrados: ${snapshot.size}`);
+                
                 // Agrupar por semana
                 const semanas = {};
                 snapshot.forEach(doc => {
-                    const data = new Date(doc.id);
+                    console.log(`📝 Processando dia: ${doc.id}`, doc.data());
+                    const data = new Date(doc.id + 'T00:00:00');
                     const diaMes = data.getDate();
                     const numSemana = Math.ceil(diaMes / 7);
                     
@@ -1342,10 +1368,14 @@
                                     (parseFloat(dados.taxas) || 0) + 
                                     (parseFloat(dados.pequenos) || 0);
                     
+                    console.log(`💰 Semana ${numSemana} - Receita: ${receita}, Despesas: ${despesas}`);
+                    
                     semanas[numSemana].receita += receita;
                     semanas[numSemana].despesas += despesas;
                     semanas[numSemana].lucro += (receita - despesas);
                 });
+                
+                console.log(`📈 Resumo por semanas:`, semanas);
                 
                 // Renderizar semanas
                 let totalMensalReceita = 0;
@@ -1375,8 +1405,10 @@
                 const totalLucroCell = document.getElementById('totalMensalLucro');
                 totalLucroCell.style.color = totalMensalLucro >= 0 ? '#1DB954' : '#E22134';
                 
+                console.log(`✅ Tabela semanal atualizada com sucesso!`);
+                
             } catch (e) {
-                console.error("Erro ao carregar dados semanais:", e);
+                console.error("❌ Erro ao carregar dados semanais:", e);
             }
         }
         
@@ -1389,7 +1421,8 @@
             const tbody = document.getElementById('tabelaAnual');
             tbody.innerHTML = '';
             
-            const ano = document.getElementById('anoSelecionado')?.value || new Date().getFullYear();
+            const anoSelect = document.getElementById('anoSelecionado');
+            const ano = anoSelect ? anoSelect.value : new Date().getFullYear();
             
             let totalAnualReceita = 0;
             let totalAnualDespesas = 0;
@@ -1465,6 +1498,16 @@
             const totalAnualCell = document.getElementById('totalAnualResultado');
             totalAnualCell.style.color = totalAnualLucro >= 0 ? '#1DB954' : '#E22134';
         }
+        
+        // Adicionar listener para atualizar tabela anual quando mudar o ano
+        window.addEventListener('load', function() {
+            const anoSelect = document.getElementById('anoSelecionado');
+            if (anoSelect) {
+                anoSelect.addEventListener('change', function() {
+                    inicializarTabelaAnual();
+                });
+            }
+        });
         
         let dadosAnuais = Array(12).fill(null).map(() => ({
             entradas: 0,
