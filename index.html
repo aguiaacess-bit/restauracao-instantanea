@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Black Drivers - Gestão Financeira Profissional</title>
     
     <!-- FIREBASE SDKs -->
@@ -13,7 +13,7 @@
     <!-- GOOGLE FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
         * {
@@ -56,12 +56,11 @@
         }
         
         .logo {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 900;
             display: flex;
             align-items: center;
-            gap: 10px;
-            letter-spacing: -0.5px;
+            letter-spacing: 1.5px;
         }
         
         .periodo-info {
@@ -135,6 +134,11 @@
             position: sticky;
             top: 77px;
             z-index: 100;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .tabs::-webkit-scrollbar {
+            height: 0;
         }
         
         .tab {
@@ -490,6 +494,15 @@
             margin-bottom: 40px;
         }
         
+        .login-logo h1 {
+            font-size: 36px;
+            font-weight: 900;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+            font-family: 'Inter', sans-serif;
+        }
+        
         .login-logo p {
             font-size: 14px;
             color: #6A6A6A;
@@ -568,25 +581,110 @@
             .header {
                 flex-direction: column;
                 gap: 16px;
-                padding: 20px;
+                padding: 16px 20px;
+            }
+            
+            .header-left {
+                flex-direction: column;
+                width: 100%;
+                gap: 16px;
+            }
+            
+            .logo {
+                font-size: 16px;
+                letter-spacing: 1.2px;
             }
             
             .periodo-info {
-                flex-direction: column;
+                flex-direction: row;
                 width: 100%;
+                gap: 8px;
             }
             
             .periodo-info input {
                 width: 100%;
+                font-size: 14px;
+                padding: 10px 14px;
             }
             
             .summary-cards {
                 grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .card-value {
+                font-size: 24px;
+            }
+            
+            .tab-content {
+                padding: 20px;
+            }
+            
+            .form-section {
+                padding: 20px;
+            }
+            
+            .input-group {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .tabs {
+                top: auto;
+                position: relative;
+            }
+            
+            .tab {
+                padding: 14px 20px;
+                font-size: 13px;
             }
             
             #login {
-                margin: 40px 20px;
-                padding: 40px 30px;
+                margin: 20px;
+                padding: 40px 24px;
+            }
+            
+            .login-logo h1 {
+                font-size: 28px;
+                letter-spacing: 1.5px;
+            }
+            
+            .login-logo p {
+                font-size: 13px;
+            }
+            
+            .total-box {
+                padding: 24px 20px;
+            }
+            
+            .total-value {
+                font-size: 28px;
+            }
+            
+            .quote {
+                padding: 24px 20px;
+                font-size: 16px;
+            }
+            
+            table {
+                font-size: 13px;
+            }
+            
+            th, td {
+                padding: 12px 10px;
+                font-size: 13px;
+            }
+            
+            h2 {
+                font-size: 20px !important;
+            }
+            
+            h3 {
+                font-size: 18px !important;
             }
         }
     </style>
@@ -595,7 +693,7 @@
     <!-- LOGIN -->
     <div id="login">
       <div class="login-logo">
-        <img src="/mnt/user-data/uploads/ChatGPT_Image_2_de_fev__de_2026__21_24_12.png" alt="Black Drivers" style="width: 200px; height: auto; margin-bottom: 24px;">
+        <h1>BLACK DRIVERS</h1>
         <p>Gestão financeira profissional para motoristas</p>
       </div>
       
@@ -618,7 +716,7 @@
         <div class="header">
             <div class="header-left">
                 <div class="logo">
-                    <img src="/mnt/user-data/uploads/ChatGPT_Image_2_de_fev__de_2026__21_24_12.png" alt="Black Drivers" style="height: 32px; width: auto;">
+                    <span>BLACK DRIVERS</span>
                 </div>
                 <div class="periodo-info">
                     <input type="text" id="month" placeholder="Mês" oninput="trocarPeriodo()">
