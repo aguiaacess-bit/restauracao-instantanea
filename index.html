@@ -1126,7 +1126,7 @@
 </head>
 <body>
     <!-- LOGIN -->
-    <div id="login">
+    <div id="login" style="display:block;">
       <div class="login-logo">
         <h1>BLACK DRIVERS</h1>
         <p>Gestão financeira profissional para motoristas</p>
@@ -3082,6 +3082,74 @@
                 console.log('Som não pôde ser reproduzido:', e);
             }
         }
+        
+        // FUNÇÃO DE SOM DE CLICK
+        window.tocarSomClick = function() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.05);
+            } catch (e) {
+                // Silenciosamente ignora erro de som
+            }
+        }
+        
+        // ADICIONAR SOM DE CLICK A TODOS OS BOTÕES E ELEMENTOS CLICÁVEIS
+        window.addEventListener('load', function() {
+            // Adicionar som de click a todos os botões
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('button, .tab, .btn-avaliacao, .ponto-btn, .chart-btn, .btn-download, .btn-sair, .btn-whatsapp')) {
+                    tocarSomClick();
+                }
+            });
+            
+            // Adicionar som de click a inputs quando focados
+            document.addEventListener('focus', function(e) {
+                if (e.target.matches('input, select, textarea')) {
+                    tocarSomClick();
+                }
+            }, true);
+        });
+        
+        // Inicializar AudioContext no primeiro toque/click (necessário para mobile)
+        let audioContextInicializado = false;
+        document.addEventListener('touchstart', function inicializarAudio() {
+            if (!audioContextInicializado) {
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    audioContext.resume();
+                    audioContextInicializado = true;
+                    console.log('🔊 Áudio inicializado para mobile');
+                } catch (e) {
+                    console.log('Erro ao inicializar áudio:', e);
+                }
+            }
+        }, { once: false });
+        
+        document.addEventListener('click', function inicializarAudio() {
+            if (!audioContextInicializado) {
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    audioContext.resume();
+                    audioContextInicializado = true;
+                    console.log('🔊 Áudio inicializado');
+                } catch (e) {
+                    console.log('Erro ao inicializar áudio:', e);
+                }
+            }
+        }, { once: false });
         
         }
     </script>
