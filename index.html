@@ -647,22 +647,38 @@
         
         /* LEMBRETES */
         .lembrete-item {
-            background: #1F1F1F;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 12px;
+            background: linear-gradient(135deg, #1F1F1F 0%, #000000 100%);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 16px;
             border-left: 4px solid #1DB954;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s;
+        }
+        
+        .lembrete-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.2);
         }
         
         .lembrete-item.vencendo {
             border-left-color: #FFD700;
+            background: linear-gradient(135deg, #2A2200 0%, #000000 100%);
+        }
+        
+        .lembrete-item.vencendo:hover {
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
         }
         
         .lembrete-item.vencido {
             border-left-color: #E22134;
+            background: linear-gradient(135deg, #2A0000 0%, #000000 100%);
+        }
+        
+        .lembrete-item.vencido:hover {
+            box-shadow: 0 4px 12px rgba(226, 33, 52, 0.2);
         }
         
         .lembrete-info {
@@ -671,13 +687,72 @@
         
         .lembrete-titulo {
             font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 4px;
+            font-size: 18px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .lembrete-data {
             font-size: 14px;
             color: #6A6A6A;
+            margin-bottom: 4px;
+        }
+        
+        .lembrete-status {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        
+        .lembrete-item .lembrete-status {
+            background: rgba(29, 185, 84, 0.2);
+            color: #1DB954;
+        }
+        
+        .lembrete-item.vencendo .lembrete-status {
+            background: rgba(255, 215, 0, 0.2);
+            color: #FFD700;
+        }
+        
+        .lembrete-item.vencido .lembrete-status {
+            background: rgba(226, 33, 52, 0.2);
+            color: #E22134;
+        }
+        
+        .lembrete-contador {
+            text-align: right;
+            padding-left: 24px;
+        }
+        
+        .lembrete-dias {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        
+        .lembrete-item .lembrete-dias {
+            color: #1DB954;
+        }
+        
+        .lembrete-item.vencendo .lembrete-dias {
+            color: #FFD700;
+        }
+        
+        .lembrete-item.vencido .lembrete-dias {
+            color: #E22134;
+        }
+        
+        .lembrete-label {
+            font-size: 12px;
+            color: #6A6A6A;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         /* GRÁFICOS */
@@ -1096,10 +1171,9 @@
             <button class="tab" onclick="openTab(event, 'analise')">Análise</button>
             <button class="tab" onclick="openTab(event, 'meta-inteligente')">Meta Inteligente</button>
             <button class="tab" onclick="openTab(event, 'ponto')">Ponto</button>
-            <button class="tab" onclick="openTab(event, 'metas')">Metas</button>
+            <button class="tab" onclick="openTab(event, 'lembretes')">Lembretes</button>
             <button class="tab" onclick="openTab(event, 'graficos')">Gráficos</button>
             <button class="tab" onclick="openTab(event, 'parcerias')">Parcerias</button>
-            <button class="tab" onclick="openTab(event, 'lembretes')">Lembretes</button>
             <button class="tab" onclick="openTab(event, 'historico')">Histórico</button>
         </div>
         
@@ -1397,37 +1471,37 @@
             </div>
         </div>
         
-        <!-- ABA 8: METAS -->
-        <div id="metas" class="tab-content">
+        <!-- ABA 8: LEMBRETES -->
+        <div id="lembretes" class="tab-content">
+            <h2 style="margin-bottom: 28px; color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Lembretes de Vencimentos</h2>
+            
             <div class="form-section">
-                <h3>Gestão de Economia</h3>
+                <h3>Cadastrar Vencimentos</h3>
+                <p class="instruction">Defina as datas de vencimento dos seus documentos e obrigações</p>
                 
                 <div class="input-group">
                     <div class="input-field">
-                        <label>Valor Guardado Este Mês</label>
-                        <input type="number" id="valorEconomizado" placeholder="0,00" oninput="calcular()">
+                        <label>🪪 Vencimento CNH</label>
+                        <input type="date" id="vencimentoCNH" oninput="salvarLembretes()">
                     </div>
                     <div class="input-field">
-                        <label>Meta de Economia Mensal</label>
-                        <input type="number" id="metaMensal" placeholder="0,00" oninput="calcular()">
+                        <label>🚗 Vencimento IPVA</label>
+                        <input type="date" id="vencimentoIPVA" oninput="salvarLembretes()">
+                    </div>
+                    <div class="input-field">
+                        <label>📄 Vencimento Documento Veículo</label>
+                        <input type="date" id="vencimentoDocumento" oninput="salvarLembretes()">
+                    </div>
+                    <div class="input-field">
+                        <label>💰 Vencimento Prestação</label>
+                        <input type="date" id="vencimentoPrestacao" oninput="salvarLembretes()">
                     </div>
                 </div>
-                
-                <div class="progress-container">
-                    <div class="progress-label">
-                        <span>Progresso da Meta</span>
-                        <span id="progressoPorcentagem">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill" style="width: 0%;">
-                            <span id="progressText"></span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="alert-box info">
-                    <strong>Recomendação Profissional:</strong> Reserve no mínimo 20% do lucro líquido para fundo de emergência e investimentos de longo prazo.
-                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3>Próximos Vencimentos</h3>
+                <div id="listaLembretes"></div>
             </div>
         </div>
         
@@ -1489,38 +1563,6 @@
             </div>
             
             <div id="listaParceiros"></div>
-        </div>
-        
-        <!-- ABA 8: LEMBRETES -->
-        <div id="lembretes" class="tab-content">
-            <h2 style="margin-bottom: 28px; color: white; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;">Lembretes de Vencimentos</h2>
-            
-            <div class="form-section">
-                <h3>Cadastrar Vencimentos</h3>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label>Vencimento CNH</label>
-                        <input type="date" id="vencimentoCNH" oninput="salvarLembretes()">
-                    </div>
-                    <div class="input-field">
-                        <label>Vencimento IPVA</label>
-                        <input type="date" id="vencimentoIPVA" oninput="salvarLembretes()">
-                    </div>
-                    <div class="input-field">
-                        <label>Vencimento Documento</label>
-                        <input type="date" id="vencimentoDocumento" oninput="salvarLembretes()">
-                    </div>
-                    <div class="input-field">
-                        <label>Vencimento Prestação</label>
-                        <input type="date" id="vencimentoPrestacao" oninput="salvarLembretes()">
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-section">
-                <h3>Próximos Vencimentos</h3>
-                <div id="listaLembretes"></div>
-            </div>
         </div>
         
         <!-- ABA 9: HISTÓRICO SEMANAL/ANUAL -->
@@ -1795,8 +1837,6 @@
                                    getInputValue('taxas') + getInputValue('pequenos');
             
             const totalGastos = totalFixos + totalVariaveis + totalInvisiveis;
-            const valorEconomizado = getInputValue('valorEconomizado');
-            const metaMensal = getInputValue('metaMensal');
             const kmRodados = getInputValue('kmRodados');
             const resultado = totalEntradas - totalGastos;
             
@@ -1820,13 +1860,6 @@
             } else {
                 document.getElementById('impactoAnual').style.display = 'none';
             }
-            
-            const progressoPorcentagem = metaMensal > 0 ? (valorEconomizado / metaMensal) * 100 : 0;
-            const progressoLimitado = Math.min(progressoPorcentagem, 100);
-            
-            document.getElementById('progressoPorcentagem').textContent = progressoLimitado.toFixed(0) + '%';
-            document.getElementById('progressFill').style.width = progressoLimitado + '%';
-            document.getElementById('progressText').textContent = progressoLimitado > 10 ? progressoLimitado.toFixed(0) + '%' : '';
             
             // Atualizar ranking
             atualizarRanking(totalEntradas);
@@ -2429,10 +2462,10 @@
             const lista = document.getElementById('listaLembretes');
             const hoje = new Date();
             const lembretes = [
-                { titulo: 'CNH', data: document.getElementById('vencimentoCNH').value },
-                { titulo: 'IPVA', data: document.getElementById('vencimentoIPVA').value },
-                { titulo: 'Documento', data: document.getElementById('vencimentoDocumento').value },
-                { titulo: 'Prestação do Carro', data: document.getElementById('vencimentoPrestacao').value }
+                { titulo: '🪪 CNH', data: document.getElementById('vencimentoCNH').value },
+                { titulo: '🚗 IPVA', data: document.getElementById('vencimentoIPVA').value },
+                { titulo: '📄 Documento do Veículo', data: document.getElementById('vencimentoDocumento').value },
+                { titulo: '💰 Prestação do Carro', data: document.getElementById('vencimentoPrestacao').value }
             ];
             
             lista.innerHTML = '';
@@ -2444,16 +2477,34 @@
                 const diasRestantes = Math.ceil((dataVencimento - hoje) / (1000 * 60 * 60 * 24));
                 
                 let classe = '';
-                let status = '';
+                let statusTexto = '';
+                let diasTexto = '';
+                let labelDias = 'dias';
                 
                 if (diasRestantes < 0) {
                     classe = 'vencido';
-                    status = `Vencido há ${Math.abs(diasRestantes)} dias`;
+                    statusTexto = '❌ VENCIDO';
+                    diasTexto = Math.abs(diasRestantes);
+                    labelDias = 'dias atrás';
+                } else if (diasRestantes === 0) {
+                    classe = 'vencendo';
+                    statusTexto = '⚠️ VENCE HOJE';
+                    diasTexto = '0';
+                    labelDias = 'HOJE';
+                } else if (diasRestantes === 1) {
+                    classe = 'vencendo';
+                    statusTexto = '⚠️ VENCE AMANHÃ';
+                    diasTexto = '1';
+                    labelDias = 'dia';
                 } else if (diasRestantes <= 30) {
                     classe = 'vencendo';
-                    status = `Vence em ${diasRestantes} dias`;
+                    statusTexto = '⚠️ ATENÇÃO';
+                    diasTexto = diasRestantes;
+                    labelDias = 'dias';
                 } else {
-                    status = `Vence em ${diasRestantes} dias`;
+                    statusTexto = '✅ EM DIA';
+                    diasTexto = diasRestantes;
+                    labelDias = 'dias';
                 }
                 
                 const item = document.createElement('div');
@@ -2461,14 +2512,29 @@
                 item.innerHTML = `
                     <div class="lembrete-info">
                         <div class="lembrete-titulo">${lembrete.titulo}</div>
-                        <div class="lembrete-data">${new Date(lembrete.data).toLocaleDateString('pt-BR')} - ${status}</div>
+                        <div class="lembrete-data">Vencimento: ${new Date(lembrete.data).toLocaleDateString('pt-BR', { 
+                            day: '2-digit', 
+                            month: 'long', 
+                            year: 'numeric' 
+                        })}</div>
+                        <div class="lembrete-status">${statusTexto}</div>
+                    </div>
+                    <div class="lembrete-contador">
+                        <div class="lembrete-dias">${diasTexto}</div>
+                        <div class="lembrete-label">${labelDias}</div>
                     </div>
                 `;
                 lista.appendChild(item);
             });
             
             if (lista.children.length === 0) {
-                lista.innerHTML = '<p style="color: #6A6A6A; text-align: center; padding: 20px;">Nenhum lembrete cadastrado</p>';
+                lista.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <div style="font-size: 64px; margin-bottom: 16px; opacity: 0.3;">📅</div>
+                        <p style="color: #6A6A6A; font-size: 16px;">Nenhum lembrete cadastrado</p>
+                        <p style="color: #6A6A6A; font-size: 14px; margin-top: 8px;">Cadastre as datas acima para receber alertas</p>
+                    </div>
+                `;
             }
         }
         
