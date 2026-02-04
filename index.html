@@ -1772,6 +1772,9 @@
           loginDiv.style.display = "none";
           appDiv.style.display = "block";
           
+          // Tocar som de boas-vindas
+          tocarSomBoasVindas();
+          
           // Define data atual se não estiver definida
           if (!document.getElementById('dataAtual').value) {
             const hoje = new Date();
@@ -3041,6 +3044,43 @@
             
             const totalAnualCell = document.getElementById('totalAnualResultado');
             totalAnualCell.style.color = totalAnualLucro >= 0 ? '#1DB954' : '#E22134';
+        }
+        
+        // FUNÇÃO DE SOM DE BOAS-VINDAS (estilo Uber)
+        window.tocarSomBoasVindas = function() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Criar sequência de notas agradável (acorde C maior)
+                const notas = [
+                    { freq: 523.25, time: 0, duration: 0.15 },    // C5
+                    { freq: 659.25, time: 0.08, duration: 0.15 },  // E5
+                    { freq: 783.99, time: 0.16, duration: 0.25 }   // G5
+                ];
+                
+                notas.forEach(nota => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(nota.freq, audioContext.currentTime + nota.time);
+                    
+                    // Envelope suave (fade in/out)
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime + nota.time);
+                    gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + nota.time + 0.02);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + nota.time + nota.duration);
+                    
+                    oscillator.start(audioContext.currentTime + nota.time);
+                    oscillator.stop(audioContext.currentTime + nota.time + nota.duration);
+                });
+                
+                console.log('🔊 Som de boas-vindas tocado!');
+            } catch (e) {
+                console.log('Som não pôde ser reproduzido:', e);
+            }
         }
         
         }
